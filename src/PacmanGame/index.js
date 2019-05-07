@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
-import { animate, changeDirection } from "./game";
-import Board from "./Board";
-import Scores from "./Scores";
-import AllFood from "./AllFood";
-import Monster from "./Monster";
-import Player from "./Player";
+import { animate, changeDirection } from "./gameFunctions";
+import Board from "./components/Board/board";
+import Scores from "./components/Score";
+import AllFood from "./components/AllFoods";
+import Monster from "./components/Monsters";
+import Player from "./components/Player";
+// import { Board, Scores, AllFood, Monster, Player } from "./components";
 import "./style.scss";
 
 export default class Pacman extends Component {
