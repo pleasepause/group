@@ -69,7 +69,6 @@ export class PacManAgent {
     this.game.reset();
   }
 
-  /// hey look at this change
 
   /**
    * Play one step of the game.
