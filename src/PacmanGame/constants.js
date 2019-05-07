@@ -8,6 +8,13 @@ export const COMPASS = [EAST, NORTH, WEST, SOUTH];
 export const WIDTH = 28;
 export const HEIGHT = 36;
 
+export function cssPosition(position, gridSize) {
+  return {
+    left: (position[0] + 1.5) * gridSize,
+    top: (HEIGHT - position[1] - 3) * gridSize
+  };
+}
+
 export const PLAYER_RADIUS = 0.8;
 
 export const WALL_COLOUR = "#06f";

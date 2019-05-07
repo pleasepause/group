@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import * as constants from "../../constants";
+import * as constants from "../constants";
 
 function getCornerArc(cornerArcRadius, clockwise, diffX, diffY) {
   return `a${cornerArcRadius},${cornerArcRadius} 0 0 ${clockwise >>

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { PLAYER_RADIUS } from "../constants";
-import { cssPosition } from "../helpers";
-import "./style.scss";
+import { PLAYER_RADIUS, cssPosition } from "../constants";
+import "../style.scss";
 
 const ANIMATION_SPEED = 30;
 
