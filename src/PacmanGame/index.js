@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
 import { animate, changeDirection } from "./gameFunctions";
@@ -8,7 +7,6 @@ import Scores from "./components/Score";
 import AllFood from "./components/AllFoods";
 import Monster from "./components/Monsters";
 import Player from "./components/Player";
-// import { Board, Scores, AllFood, Monster, Player } from "./components";
 import "./style.scss";
 
 export default class Pacman extends Component {
@@ -91,8 +89,3 @@ export default class Pacman extends Component {
     );
   }
 }
-
-Pacman.propTypes = {
-  gridSize: PropTypes.number.isRequired,
-  onEnd: PropTypes.func
-};

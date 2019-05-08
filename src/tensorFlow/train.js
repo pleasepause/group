@@ -1,4 +1,4 @@
-import Pacman from "../Pacman/index";
+import Pacman from "../PacmanGame/index";
 import PacManAgent from "./agent";
 import { copyWeights } from "./dqn";
 

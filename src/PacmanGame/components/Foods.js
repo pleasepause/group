@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { cssPosition } from "../constants";
 import "../style.scss";
@@ -11,10 +10,3 @@ export default function Food({ gridSize, position, eaten, big }) {
 
   return <span className={className} style={style} />;
 }
-
-Food.propTypes = {
-  gridSize: PropTypes.number.isRequired,
-  position: PropTypes.array.isRequired,
-  eaten: PropTypes.bool.isRequired,
-  big: PropTypes.bool.isRequired
-};

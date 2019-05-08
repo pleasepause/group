@@ -2,7 +2,6 @@ import React from "react";
 import { WALL_COLOUR, WIDTH, HEIGHT } from "../../constants";
 import Line from "../gridline";
 import walls from "./walls";
-import PropTypes from "prop-types";
 import "../../style.scss";
 
 export function Walls(props) {
@@ -48,7 +47,3 @@ export default function Board(props) {
     </div>
   );
 }
-
-Board.propTypes = {
-  gridSize: PropTypes.number.isRequired
-};

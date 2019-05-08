@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { cssPosition } from "../constants";
 import "../style.scss";
 
@@ -36,12 +35,6 @@ function MonsterEye({ radius, offset, direction }) {
     </g>
   );
 }
-
-MonsterEye.propTypes = {
-  radius: PropTypes.number.isRequired,
-  offset: PropTypes.number.isRequired,
-  direction: PropTypes.number.isRequired
-};
 
 function getMonsterPath(radius) {
   const width = radius * 2;
@@ -91,11 +84,6 @@ function WaveMouth({ gridSize, eating }) {
   return <path d={mouthPath} stroke="white" strokeWidth={1} />;
 }
 
-WaveMouth.propTypes = {
-  gridSize: PropTypes.number.isRequired,
-  eating: PropTypes.bool.isRequired
-};
-
 function getColor(eating, eatingFlash, color) {
   if (eating) {
     if (eatingFlash) {
@@ -141,15 +129,6 @@ function MonsterIcon({
   );
 }
 
-MonsterIcon.propTypes = {
-  eating: PropTypes.bool.isRequired,
-  eatingFlash: PropTypes.number,
-  gridSize: PropTypes.number.isRequired,
-  position: PropTypes.array.isRequired,
-  color: PropTypes.string.isRequired,
-  direction: PropTypes.number.isRequired
-};
-
 export default class Monster extends Component {
   constructor(props) {
     super(props);
@@ -183,14 +162,7 @@ export default class Monster extends Component {
   componentWillUnmount() {
     clearInterval(this.state.timerFlash);
   }
-  static propTypes = {
-    gridSize: PropTypes.number.isRequired,
-    position: PropTypes.array.isRequired,
-    direction: PropTypes.number.isRequired,
-    color: PropTypes.string.isRequired,
-    eatingTime: PropTypes.number.isRequired,
-    deadTime: PropTypes.number.isRequired
-  };
+
   render() {
     if (this.props.deadTime > 0) {
       return null;

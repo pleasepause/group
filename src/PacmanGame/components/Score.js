@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import "../style.scss";
 
 export default function Scores({ score, lost }) {
@@ -19,8 +18,3 @@ export default function Scores({ score, lost }) {
     </div>
   );
 }
-
-Scores.propTypes = {
-  lost: PropTypes.bool.isRequired,
-  score: PropTypes.number.isRequired
-};

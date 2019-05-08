@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Food from "./Foods.js";
 import "../style.scss";
 
@@ -10,7 +9,3 @@ export default function AllFood({ food, ...props }) {
 
   return <div className="food-all">{items}</div>;
 }
-
-AllFood.propTypes = {
-  food: PropTypes.array.isRequired
-};

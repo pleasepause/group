@@ -1,7 +1,7 @@
 import * as tf from "@tensorflow/tfjs";
 
 import { createDeepQNetwork } from "./dqn";
-import PacMan from "../Pacman/index";
+import PacMan from "../PacmanGame/index";
 import { ReplayMemory } from "./replaymemory";
 
 function assertPositiveInteger(x, name) {
@@ -68,7 +68,6 @@ export class PacManAgent {
     this.cumulativeReward_ = 0;
     this.game.reset();
   }
-
 
   /**
    * Play one step of the game.
