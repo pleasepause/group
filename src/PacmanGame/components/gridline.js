@@ -105,3 +105,4 @@ export default function Line({ gridSize, start, parts, ...props }) {
 
   return <path d={pathString} {...pathProps} />;
 }
+

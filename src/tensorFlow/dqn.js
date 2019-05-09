@@ -16,6 +16,13 @@
  */
 
 import * as tf from "@tensorflow/tfjs";
+import { SGDOptimizer } from "@tensorflow/tfjs";
+import Pacman from "../PacmanGame";
+
+export function setup() {
+  let instance = new Pacman();
+  let state = instance.getInitialState();
+}
 
 export function createDeepQNetwork(h, w, numActions) {
   if (!(Number.isInteger(h) && h > 0)) {
@@ -31,36 +38,64 @@ export function createDeepQNetwork(h, w, numActions) {
     );
   }
 
-  const model = tf.sequential();
-  model.add(
-    tf.layers.conv2d({
-      filters: 122,
-      kernelSize: 4,
-      strides: 1,
-      activation: "relu",
-      inputShape: [h, w, 2]
-    })
-  );
-  model.add(
-    tf.layers.conv2d({
-      filters: 244,
-      kernelSize: 4,
-      strides: 1,
-      activation: "relu"
-    })
-  );
-  model.add(
-    tf.layers.conv2d({
-      filters: 244,
-      kernelSize: 4,
-      strides: 1,
-      activation: "relu"
-    })
-  );
-  model.add(tf.layers.flatten());
-  model.add(tf.layers.dense({ units: 244, activation: "relu" }));
-  model.add(tf.layers.dense({ units: numActions }));
-  return model;
+  console.log("INSIDE OF DQN file", state);
+  const model = tf.sequential({
+    layers: [
+      tf.layers.dense({ inputShape: [2], units: 6, activation: "relu" }),
+      tf.layers.dense({ units: 3, activation: "softmax" })
+    ]
+  });
+
+  const sgdOpt = tf.train.sgd(0.1);
+
+  pac.model.compile({
+    optimizer: sgdOpt,
+    loss: "meanSquaredError"
+  });
+
+  pac.training = {
+    inputs: [],
+    labels: []
+  };
+
+  //training
+  //call inputLAyer method on game class, gives us the food array, access also from state the position of pacman
+  async function trainModel() {
+    await model.fit;
+  }
+
+  // const input = tf.layers.dense({});
+
+  // const model = tf.sequential();
+  // model.add(
+  //   tf.layers.conv2d({
+  //     filters: 122,
+  //     kernelSize: 4,
+  //     strides: 1,
+  //     activation: "relu",
+  //     inputShape: [h, w, 2]
+  //   })
+  // );
+  // model.add(
+  //   tf.layers.conv2d({
+  //     filters: 244,
+  //     kernelSize: 4,
+  //     strides: 1,
+  //     activation: "relu"
+  //   })
+  // );
+  // model.add(
+  //   tf.layers.conv2d({
+  //     filters: 244,
+  //     kernelSize: 4,
+  //     strides: 1,
+  //     activation: "relu"
+  //   })
+  // );
+  // model.add(tf.layers.flatten());
+  // model.add(tf.layers.dense({ units: 244, activation: "relu" }));
+  // model.add(tf.layers.dense({ units: numActions }));
+  // return model;
 }
 
 /**

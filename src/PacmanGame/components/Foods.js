@@ -10,3 +10,4 @@ export default function Food({ gridSize, position, eaten, big }) {
 
   return <span className={className} style={style} />;
 }
+

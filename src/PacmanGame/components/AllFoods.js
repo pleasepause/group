@@ -9,3 +9,4 @@ export default function AllFood({ food, ...props }) {
 
   return <div className="food-all">{items}</div>;
 }
+

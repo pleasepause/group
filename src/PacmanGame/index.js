@@ -7,15 +7,13 @@ import Scores from "./components/Score";
 import AllFood from "./components/AllFoods";
 import Monster from "./components/Monsters";
 import Player from "./components/Player";
-import "./style.scss";
+
 
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
 
-    this.state = getInitialState();
 
-    this.onKey = evt => {
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
       }
@@ -46,6 +44,7 @@ export default class Pacman extends Component {
 
       this.step();
     }, 3000);
+
   }
   componentWillUnmount() {
     window.removeEventListener("keydown", this.onKey);
@@ -64,6 +63,15 @@ export default class Pacman extends Component {
   changeDirection(direction) {
     this.setState(changeDirection(this.state, { direction }));
   }
+
+
+  inputLayer() {
+    // console.log("INSIDE InputLayer!", this.state.food);
+    let coordinates = this.state.food.map(food => food.position);
+    return coordinates;
+  }
+
+
   render() {
     const { onEnd, ...otherProps } = this.props;
 
@@ -85,7 +93,11 @@ export default class Pacman extends Component {
           lost={this.state.lost}
           onEnd={onEnd}
         />
+
+        <DeepQ food={this.state.food} player={this.state.player} />
+
       </div>
     );
   }
 }
+

@@ -18,3 +18,4 @@ export default function Scores({ score, lost }) {
     </div>
   );
 }
+

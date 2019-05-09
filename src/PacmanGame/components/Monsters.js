@@ -36,6 +36,7 @@ function MonsterEye({ radius, offset, direction }) {
   );
 }
 
+
 function getMonsterPath(radius) {
   const width = radius * 2;
   const height = radius * 2;
@@ -128,6 +129,7 @@ function MonsterIcon({
     </svg>
   );
 }
+
 
 export default class Monster extends Component {
   constructor(props) {
