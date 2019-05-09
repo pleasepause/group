@@ -1,27 +1,48 @@
-import * as tf from '@tensorflow/tfjs'
-import 
+import * as tf from "@tensorflow/tfjs";
+import React, { Component } from "react";
 
-const model = tf.sequential();
-model.add(tf.layers.dense({}))
+export default class DeepQ extends Component {
+  constructor(props) {
+    super(props);
+  }
 
+  model() {
+    const model = tf.sequential({
+      layers: [
+        tf.layers.dense({ inputShape: [2], units: 6, activation: "relu" }),
+        tf.layers.dense({ units: 4, activation: "softmax" })
+      ]
+    });
 
-/*
-The Agent has 4 inputs
-    Up
-    Down
-    Left
-    Right
+    const sgdOpt = tf.train.sgd(0.1);
 
-The Environment has only some things that matter.
+    model.compile({
+      optimizer: sgdOpt,
+      loss: "meanSquaredError"
+    });
 
-    When th
-*/
+    model.training = {
+      inputs: [],
+      labels: []
+    };
 
-export class PacMan {
-    constructor() {
-
+    //training
+    //call inputLAyer method on game class, gives us the food array, access also from state the position of pacman
+    async function trainModel() {
+      await model.fit;
     }
-    getStateTensor(){
-        return tf.tensor2d()
-    }
+  }
+
+  stateToVector() {
+    return [
+      ...this.props.player.position,
+      ...this.props.food.map(food => +food.eaten)
+    ];
+  }
+
+  render() {
+    console.log("PLAYER", this.props.player);
+    console.log("FOOD", this.props.food);
+    return <div>hi!</div>;
+  }
 }

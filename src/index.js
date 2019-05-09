@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
-import Pacman from "./Pacman";
+import Pacman from "./PacmanGame";
+import tester from "./tensorFlow/tensors";
 
 const props = {
   gridSize: 20,
@@ -14,5 +15,7 @@ function renderApp(PacmanApp = Pacman) {
 renderApp();
 
 if (module.hot) {
-  module.hot.accept("./Pacman", () => renderApp(require("./Pacman").default));
+  module.hot.accept("./PacmanGame", () =>
+    renderApp(require("./PacmanGame").default)
+  );
 }

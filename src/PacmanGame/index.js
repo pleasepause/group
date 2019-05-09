@@ -10,14 +10,18 @@ import Monster from "./components/Monsters";
 import Player from "./components/Player";
 // import { Board, Scores, AllFood, Monster, Player } from "./components";
 import "./style.scss";
+import DeepQ from "../tensorFlow/tensors";
+import * as tf from "@tensorflow/tfjs";
 
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
 
+    this.inputLayer = this.inputLayer.bind(this);
     this.state = getInitialState();
 
     this.onKey = evt => {
+      console.log(this.state.food);
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
       }
@@ -48,6 +52,9 @@ export default class Pacman extends Component {
 
       this.step();
     }, 3000);
+
+    this.inputLayer();
+    console.log(this.inputLayer());
   }
   componentWillUnmount() {
     window.removeEventListener("keydown", this.onKey);
@@ -66,6 +73,13 @@ export default class Pacman extends Component {
   changeDirection(direction) {
     this.setState(changeDirection(this.state, { direction }));
   }
+
+  inputLayer() {
+    // console.log("INSIDE InputLayer!", this.state.food);
+    let coordinates = this.state.food.map(food => food.position);
+    return coordinates;
+  }
+
   render() {
     const { onEnd, ...otherProps } = this.props;
 
@@ -87,6 +101,7 @@ export default class Pacman extends Component {
           lost={this.state.lost}
           onEnd={onEnd}
         />
+        <DeepQ food={this.state.food} player={this.state.player} />
       </div>
     );
   }
