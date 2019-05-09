@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import Pacman from "./PacmanGame";
-import tester from "./tensorFlow/tensors";
+
 
 const props = {
   gridSize: 20,
