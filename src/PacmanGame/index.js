@@ -21,7 +21,7 @@ export default class Pacman extends Component {
     this.state = getInitialState();
 
     this.onKey = evt => {
-      console.log(this.state.food);
+      // console.log(this.state.player.direction);
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
       }
@@ -54,7 +54,7 @@ export default class Pacman extends Component {
     }, 3000);
 
     this.inputLayer();
-    console.log(this.inputLayer());
+    // console.log(this.inputLayer());
   }
   componentWillUnmount() {
     window.removeEventListener("keydown", this.onKey);
