@@ -11,7 +11,11 @@ export default class DeepQ extends Component {
   }
 
   componentDidMount() {
-    this.handleMove(this.props.food, this.props.player);
+    window.addEventListener(
+      "keydown",
+      this.handleMove(this.props.food, this.props.player)
+    );
+    // this.handleMove(this.props.food, this.props.player);
   }
 
   handleReset() {
@@ -19,8 +23,8 @@ export default class DeepQ extends Component {
       firstTime = false;
       const pacmodel = tf.sequential({
         layers: [
-          tf.layers.dense({ inputShape: [246], units: 6, activation: "relu" }),
-          tf.layers.dense({ units: 4, activation: "relu" })
+          tf.layers.dense({ inputShape: [1], units: 6, activation: "relu" }),
+          tf.layers.dense({ units: 4, activation: "softmax" })
         ]
       });
 
@@ -43,23 +47,36 @@ export default class DeepQ extends Component {
     }
   }
 
-  handleMove(pacmodel, state) {
-    let whatever = () => {
-      if (this.props) {
-        console.log("inside the IF");
-        let action = 0;
-        const prediction = pacmodel.predict(
-          tf.tensor([this.stateToVector[state]])
-        );
-
-        const predictionPromise = prediction.data();
-
-        predictionPromise.then(result => console.log("RESULT: ", result));
-        //predict function returns a tensor we get data promise as result
-      }
-    };
-    return whatever;
+  findReward(state) {
+    console.log("inside of FINDREWARD!");
   }
+
+  handleMove(pacmodel, state) {
+    console.log(
+      "here is the pacmodel: ",
+      pacmodel,
+      "here is the state: ",
+      state
+    );
+  }
+
+  // handleMove(pacmodel, state) {
+  //   let whatever = () => {
+  //     if (this.props) {
+  //       console.log("inside the IF");
+  //       let action = 0;
+  //       const prediction = pacmodel.predict(
+  //         tf.tensor([this.stateToVector[state]])
+  //       );
+
+  //       const predictionPromise = prediction.data();
+
+  //       predictionPromise.then(result => console.log("RESULT: ", result));
+  //       //predict function returns a tensor we get data promise as result
+  //     }
+  //   };
+  //   return whatever;
+  // }
 
   //training
   //call inputLAyer method on game class, gives us the food array, access also from state the position of pacman

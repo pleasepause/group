@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
 import { animate, changeDirection } from "./gameFunctions";
+
+import { getNewPosition } from "./gameFunctions/movement";
+
 import Board from "./components/Board/board";
 import Scores from "./components/Score";
 import AllFood from "./components/AllFoods";
@@ -12,6 +15,18 @@ import Player from "./components/Player";
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
+
+    this.inputLayer = this.inputLayer.bind(this);
+    this.state = getInitialState();
+    this.nuPosition = getNewPosition(
+      this.state.player.position,
+      this.state.player.direction,
+      30,
+      new Date().getTime()
+    );
+    this.state.chooseRandom = this.chooseRandom.bind(this);
+    this.currentSeconds = new Date().getTime() / 1000;
+
 
     this.onKey = evt => {
       if (evt.key === "ArrowRight") {
@@ -37,6 +52,7 @@ export default class Pacman extends Component {
   }
 
   componentDidMount() {
+    console.log(this.nuPosition);
     window.addEventListener("keydown", this.onKey);
 
     this.timers.start = setTimeout(() => {
@@ -47,7 +63,9 @@ export default class Pacman extends Component {
 
     this.inputLayer();
     // console.log(this.inputLayer());
+    // this.chooseRandom();
   }
+
   componentWillUnmount() {
     window.removeEventListener("keydown", this.onKey);
 
@@ -67,6 +85,9 @@ export default class Pacman extends Component {
   }
 
 
+  actionMaker() {}
+
+
   inputLayer() {
     // console.log("INSIDE InputLayer!", this.state.food);
     let coordinates = this.state.food.map(food => food.position);
@@ -74,7 +95,25 @@ export default class Pacman extends Component {
   }
 
 
+  chooseRandom() {
+    // setTimeout(() => {
+    //   let second = new Date().getTime() / 1000;
+    //   return second;
+    // }, 5000);
+    let second = new Date().getTime() / 1000;
+    let diff = Math.floor(second - this.currentSeconds) % 5;
+
+    console.log("Difference between Second and initial Second: ", diff);
+    if (this.state.score % 7 === 0 || diff === 0) {
+      // this.changeDirection(Math.floor(Math.random() * z4));
+      this.changeDirection(diff - 1 > 0 ? diff - 1 : 0);
+      console.log("this is the direction", this.state.player.direction);
+    }
+  }
+
+
   render() {
+    // console.log(this.state);
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
@@ -93,6 +132,7 @@ export default class Pacman extends Component {
           {...props}
           {...this.state.player}
           lost={this.state.lost}
+          nuPosition={this.nuPosition}
           onEnd={onEnd}
         />
 
