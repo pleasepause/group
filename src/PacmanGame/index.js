@@ -13,7 +13,7 @@ export default class Pacman extends Component {
   constructor(props) {
     super(props);
 
-
+    this.onKey = evt => {
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
       }
@@ -45,6 +45,8 @@ export default class Pacman extends Component {
       this.step();
     }, 3000);
 
+    this.inputLayer();
+    // console.log(this.inputLayer());
   }
   componentWillUnmount() {
     window.removeEventListener("keydown", this.onKey);
