@@ -83,6 +83,7 @@ export default class Player extends Component {
     return null;
   }
   componentDidUpdate(prevProps) {
+    console.log("HEY WE UPDATED", this.props.nuPosition);
     if (!prevProps.lost && this.props.lost) {
       clearInterval(this.state.timerBite);
       clearTimeout(this.state.timerLose);
