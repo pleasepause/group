@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
 import { animate, changeDirection } from "./gameFunctions";
@@ -8,20 +7,13 @@ import Scores from "./components/Score";
 import AllFood from "./components/AllFoods";
 import Monster from "./components/Monsters";
 import Player from "./components/Player";
-// import { Board, Scores, AllFood, Monster, Player } from "./components";
-import "./style.scss";
-import DeepQ from "../tensorFlow/tensors";
-import * as tf from "@tensorflow/tfjs";
+
 
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
 
-    this.inputLayer = this.inputLayer.bind(this);
-    this.state = getInitialState();
-
     this.onKey = evt => {
-      // console.log(this.state.player.direction);
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
       }
@@ -74,11 +66,13 @@ export default class Pacman extends Component {
     this.setState(changeDirection(this.state, { direction }));
   }
 
+
   inputLayer() {
     // console.log("INSIDE InputLayer!", this.state.food);
     let coordinates = this.state.food.map(food => food.position);
     return coordinates;
   }
+
 
   render() {
     const { onEnd, ...otherProps } = this.props;
@@ -101,13 +95,11 @@ export default class Pacman extends Component {
           lost={this.state.lost}
           onEnd={onEnd}
         />
+
         <DeepQ food={this.state.food} player={this.state.player} />
+
       </div>
     );
   }
 }
 
-Pacman.propTypes = {
-  gridSize: PropTypes.number.isRequired,
-  onEnd: PropTypes.func
-};

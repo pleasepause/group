@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { PLAYER_RADIUS, cssPosition } from "../constants";
 import "../style.scss";
 
@@ -118,11 +117,3 @@ export default class Player extends Component {
   }
 }
 
-Player.propTypes = {
-  animate: PropTypes.bool,
-  gridSize: PropTypes.number.isRequired,
-  lost: PropTypes.bool.isRequired,
-  position: PropTypes.array.isRequired,
-  direction: PropTypes.number.isRequired,
-  onEnd: PropTypes.func
-};

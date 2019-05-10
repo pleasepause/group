@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import * as constants from "../constants";
 
 function getCornerArc(cornerArcRadius, clockwise, diffX, diffY) {
@@ -107,11 +106,3 @@ export default function Line({ gridSize, start, parts, ...props }) {
   return <path d={pathString} {...pathProps} />;
 }
 
-Line.propTypes = {
-  strokeWidth: PropTypes.number,
-  stroke: PropTypes.string,
-  fill: PropTypes.string,
-  gridSize: PropTypes.number.isRequired,
-  start: PropTypes.array.isRequired,
-  parts: PropTypes.array.isRequired
-};
