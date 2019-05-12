@@ -177,14 +177,21 @@ export default class DeepQ extends Component {
   }
 
   async train() {
-    const testInput = tf.tensor(this.state.episode);
-    // console.log(testInput);
-    const pacmodel = tf.sequential({
-      layers: [
-        tf.layers.dense({ inputShape: [66, 1], units: 6, activation: "relu" }),
-        tf.layers.dense({ units: 4, activation: "softmax" })
-      ]
-    });
+    const xs = tf.tensor(this.state.episode);
+    // console.log("TEST INPUT: ", testInput);
+    xs.print();
+    const ys = tf.tensor([1, 1, 1, 1]);
+    const pacmodel = tf.sequential({});
+
+    pacmodel.add(
+      tf.layers.dense({ inputShape: [3], units: 6, activation: "relu" })
+    );
+    pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
+
+    // layers: [
+    //   tf.layers.dense({ inputShape: [3], units: 6, activation: "relu" }),
+    //   tf.layers.dense({ units: 4, activation: "softmax" })
+    // ]
 
     const sgdOpt = tf.train.sgd(0.1);
 
@@ -193,7 +200,9 @@ export default class DeepQ extends Component {
       loss: "meanSquaredError"
     });
 
-    let response = await pacmodel.fit(testInput);
+    let response = await pacmodel
+      .fit(xs, ys)
+      .then(result => console.log("RESULT! ", result));
     console.log("RESPONSE: ", response);
     // const input =  this.state.episode
   }
