@@ -70,7 +70,7 @@ export function animatePlayer(state, time) {
   const food = state.food.slice();
   let scoreDelta = 0;
   if (eatenFoodIndex > -1) {
-    console.log("you ate something!");
+    // console.log("you ate something!");
     food[eatenFoodIndex].eaten = true;
 
     scoreDelta = 1 + (food[eatenFoodIndex].big >> 0);

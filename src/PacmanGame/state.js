@@ -51,6 +51,7 @@ function generateFood() {
 export default function getInitialState() {
   return {
     stepTime: Date.now(),
+    running: true,
     score: 0,
     player: {
       position: [12.5, 6],

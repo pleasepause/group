@@ -5,50 +5,232 @@ export default class DeepQ extends Component {
   constructor(props) {
     super(props);
     let firstTime = true;
+    this.state = {
+      prevScore: 0,
+      currScore: this.props.score,
+      cumulativeReward: 0,
+      prevAction: null,
+      currAction: this.props.player.direction,
+      scoreTracking: false,
+      episode: [],
+      currentReward: 0,
+      prevPosition: null,
+      currPosition: this.props.player.position
+    };
 
     this.stateToVector = this.stateToVector.bind(this);
     this.handleMove = this.handleMove.bind(this);
+    this.scoreTrack = this.scoreTrack.bind(this);
+    this.handleEpisode = this.handleEpisode.bind(this);
+    this.train = this.train.bind(this);
+    this.setup = this.setup.bind(this);
+    // this.actionInterval = this.actionInterval.bind(this);
   }
 
   componentDidMount() {
+    // console.log("PROPS IN TENSORS.JS", this.props);
     window.addEventListener(
       "keydown",
       this.handleMove(this.props.food, this.props.player)
     );
+    this.setup();
+    // actionInterval();
+
+    // setInterval(
+    //   () =>
+    //     console.log(
+    //       "player direction",
+    //       this.props.player.direction,
+    //       "next direction",
+    //       this.props.player.nextDirection
+    //     ),
+    //   200
+    // );
+
     // this.handleMove(this.props.food, this.props.player);
   }
 
-  handleReset() {
-    if (firstTime) {
-      firstTime = false;
-      const pacmodel = tf.sequential({
-        layers: [
-          tf.layers.dense({ inputShape: [1], units: 6, activation: "relu" }),
-          tf.layers.dense({ units: 4, activation: "softmax" })
-        ]
-      });
-
-      const sgdOpt = tf.train.sgd(0.1);
-
-      pacmodel.compile({
-        optimizer: sgdOpt,
-        loss: "meanSquaredError"
-      });
-
-      pacmodel.training = {
-        inputs: [],
-        labels: []
-      };
-    } else {
-      pacmodel.fit(
-        tf.tensor(pacmodel.training.inputs),
-        tf.tensor(pacmodel.training.labels)
-      );
-    }
+  componentDidUpdate() {
+    // console.log(
+    //   "player direction",
+    //   this.props.player.direction,
+    //   "next direction",
+    //   this.props.player.nextDirection
+    // );
   }
 
-  findReward(state) {
-    console.log("inside of FINDREWARD!");
+  setup() {
+    let actionInterval;
+    actionInterval = setInterval(() => {
+      // console.log("SCORE: ", this.props.score);
+      console.log("LOCAL STATE: ", this.state);
+      // console.log("LOCAL PROPS", this.props.score);
+      // if (!this.state.prevScore) {
+      //   this.setState({
+      //     // ...this.state,
+      //     prevScore: this.props.score
+      //   });
+      // }
+      //  else
+
+      let newPrev = this.state.currScore;
+      let newPrevAction = this.state.currAction;
+      let newPrevPosition = this.state.currPosition;
+      this.setState({
+        currScore: this.props.score,
+        prevScore: newPrev
+      });
+      if (!this.state.prevPosition) {
+        this.setState({
+          prevPosition: newPrevPosition,
+          currPosition: this.props.player.position
+        });
+      } else {
+        this.setState({
+          prevPosition: newPrevPosition,
+          currPosition: this.props.player.position
+        });
+      }
+      // if (this.state.prevPosition.join() === this.state.currPosition.join()) {
+      //   console.log("DO NOT STAND STILL!, -5 points");
+      // }
+      if (this.state.currScore === this.state.prevScore) {
+        // console.log("You got a negative reward!");
+        this.setState({
+          currentReward: -1,
+          cumulativeReward: this.state.cumulativeReward - 1
+        });
+        if (this.state.currAction === this.state.prevPosition) {
+        }
+        if (!this.state.scoreTracking) {
+          this.setState({
+            ...this.state,
+            scoreTracking: true
+          });
+          //calling scoreTrack method
+          this.scoreTrack();
+        }
+        //start a time for 60 secs, in callback function of timer, if this.state curr & prev scores are the same as when the timer started, then reset the game
+      } else {
+        // console.log("you got a positive reward");
+        this.setState({
+          currentReward: 1,
+          cumulativeReward: this.state.cumulativeReward + 1
+        });
+      }
+      if (!this.state.prevAction) {
+        this.setState({
+          currAction: this.props.player.direction,
+          prevAction: newPrevAction
+        });
+      }
+
+      this.setState({
+        episode: [
+          ...this.state.episode,
+          [
+            this.state.currAction,
+            this.state.currentReward,
+            this.state.cumulativeReward
+          ]
+        ]
+      });
+    }, 220);
+
+    setTimeout(() => clearInterval(actionInterval), 10000);
+  }
+
+  scoreTrack() {
+    // console.log(
+    //   "prevScore at time of invoke: ",
+    //   startPrevScore,
+    //   "currScore at time of invoke: ",
+    //   startCurrScore
+    // );
+    // console.log(
+    //   "real current score:",
+    //   this.state.currScore,
+    //   "real prev score: ",
+    //   this.state.prevScore
+    // );
+    setTimeout(() => {
+      // this.props.reset();
+      // this.setState({
+      //   ...this.state,
+      //   scoreTracking: false
+      // });
+      this.state.scoreTracking = false;
+      let { currScore, prevScore, prevPosition, currPosition } = this.state;
+      if (
+        prevScore === currScore &&
+        prevPosition.join() === currPosition.join()
+      ) {
+        console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
+        this.props.reset();
+        // this.props.pause();
+      }
+    }, 1000);
+  }
+
+  handleEpisode() {
+    console.log("EPISODE:", this.state.episode);
+  }
+
+  async train() {
+    const testInput = tf.tensor(this.state.episode);
+    // console.log(testInput);
+    const pacmodel = tf.sequential({
+      layers: [
+        tf.layers.dense({ inputShape: [66, 1], units: 6, activation: "relu" }),
+        tf.layers.dense({ units: 4, activation: "softmax" })
+      ]
+    });
+
+    const sgdOpt = tf.train.sgd(0.1);
+
+    pacmodel.compile({
+      optimizer: sgdOpt,
+      loss: "meanSquaredError"
+    });
+
+    let response = await pacmodel.fit(testInput);
+    console.log("RESPONSE: ", response);
+    // const input =  this.state.episode
+  }
+
+  // handleReset() {
+  //   console.log("CHECK if handleReset gets called on mount");
+  //   if (firstTime) {
+  //     firstTime = false;
+  //     const pacmodel = tf.sequential({
+  //       layers: [
+  //         tf.layers.dense({ inputShape: [1], units: 6, activation: "relu" }),
+  //         tf.layers.dense({ units: 4, activation: "softmax" })
+  //       ]
+  //     });
+
+  //     const sgdOpt = tf.train.sgd(0.1);
+
+  //     pacmodel.compile({
+  //       optimizer: sgdOpt,
+  //       loss: "meanSquaredError"
+  //     });
+
+  //     pacmodel.training = {
+  //       inputs: [],
+  //       labels: []
+  //     };
+  //   } else {
+  //     pacmodel.fit(
+  //       tf.tensor(pacmodel.training.inputs),
+  //       tf.tensor(pacmodel.training.labels)
+  //     );
+  //   }
+  // }
+
+  stop() {
+    console.log("you clicked stop!");
+    clearInterval(actionInterval);
   }
 
   handleMove(pacmodel, state) {
@@ -96,6 +278,12 @@ export default class DeepQ extends Component {
     // console.log("S2V: ", this.stateToVector());
     // console.log("PLAYER", this.props.player);
     // console.log("FOOD", this.props.food);
-    return <div>hi!</div>;
+    return (
+      <div>
+        <button onClick={this.stop}>STOP</button>;
+        <button onClick={this.handleEpisode}>EPISODE</button>
+        <button onClick={this.train}>Train</button>
+      </div>
+    );
   }
 }
