@@ -26,6 +26,8 @@ export default class Pacman extends Component {
     );
     this.state.chooseRandom = this.chooseRandom.bind(this);
     this.currentSeconds = new Date().getTime() / 1000;
+    this.reset = this.reset.bind(this);
+    this.pause = this.pause.bind(this);
 
 
     this.onKey = evt => {
@@ -52,14 +54,14 @@ export default class Pacman extends Component {
   }
 
   componentDidMount() {
-    console.log(this.nuPosition);
+    // console.log(this.nuPosition);
     window.addEventListener("keydown", this.onKey);
 
     this.timers.start = setTimeout(() => {
       this.setState({ stepTime: Date.now() });
 
       this.step();
-    }, 3000);
+    }, 1);
 
     this.inputLayer();
     // console.log(this.inputLayer());
@@ -73,13 +75,19 @@ export default class Pacman extends Component {
     clearTimeout(this.timers.animate);
   }
   step() {
-    const result = animate(this.state);
+    if (this.state.running) {
+      const result = animate(this.state);
 
-    this.setState(result);
+      this.setState(result);
 
-    clearTimeout(this.timers.animate);
-    this.timers.animate = setTimeout(() => this.step(), 20);
+      clearTimeout(this.timers.animate);
+      this.timers.animate = setTimeout(() => this.step(), 20);
+    } else {
+      console.log("WERE DONE");
+      clearTimeout(this.timers.start);
+    }
   }
+
   changeDirection(direction) {
     this.setState(changeDirection(this.state, { direction }));
   }
@@ -112,6 +120,16 @@ export default class Pacman extends Component {
   }
 
 
+  reset() {
+    this.state = getInitialState();
+  }
+
+  pause() {
+    this.setState({
+      running: false
+    });
+  }
+
   render() {
     // console.log(this.state);
     const { onEnd, ...otherProps } = this.props;
@@ -136,7 +154,14 @@ export default class Pacman extends Component {
           onEnd={onEnd}
         />
 
-        <DeepQ food={this.state.food} player={this.state.player} />
+        <DeepQ
+          food={this.state.food}
+          player={this.state.player}
+          score={this.state.score}
+          reset={this.reset}
+          running={this.state.running}
+        />
+        <button onClick={this.pause}>PAUSE</button>;
 
       </div>
     );

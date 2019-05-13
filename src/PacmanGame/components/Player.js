@@ -82,13 +82,15 @@ export default class Player extends Component {
     return null;
   }
   componentDidUpdate(prevProps) {
-    console.log("HEY WE UPDATED", this.props.nuPosition);
-    if (!prevProps.lost && this.props.lost) {
-      clearInterval(this.state.timerBite);
-      clearTimeout(this.state.timerLose);
+    // console.log("HEY WE UPDATED", this.props.nuPosition);
 
-      this.setState({ angle: 0, timerLose: this.onLoseAnimation() });
-    }
+    if (this.props.nu)
+      if (!prevProps.lost && this.props.lost) {
+        clearInterval(this.state.timerBite);
+        clearTimeout(this.state.timerLose);
+
+        this.setState({ angle: 0, timerLose: this.onLoseAnimation() });
+      }
   }
   render() {
     const { gridSize, lost, position, direction } = this.props;
