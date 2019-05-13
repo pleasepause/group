@@ -185,11 +185,16 @@ export default class DeepQ extends Component {
   }
 
   act(arr) {
-    console.log("Passed in Arr: ", arr);
+    // console.log("Passed in Arr: ", arr);
     let resultIdx = arr.indexOf(arr.reduce((a, c) => Math.max(a, c)));
-    console.log("RESULTIDX: ", resultIdx);
-    // console.log("PROPS INSIDE OF ACT", this.props.player.direction);
+    // console.log("RESULTIDX: ", resultIdx);
     this.props.player.direction = resultIdx;
+  }
+
+  step() {
+    //take in the chosen action (0-3), determine what the reward and newstate would be given this action. also save the curr state as prevstate.
+    //in order to determine what the reward and next state are, we need to then include the player.position as a feature for input.
+    //if we know the player position, we can then predict their position for the next step given their direction...we can use food array to determine if they're landing on an eaten vs uneaten pellet, and can use prev position vs currposition to determine if they hit a wall
   }
 
   handleEpisode() {
@@ -197,14 +202,20 @@ export default class DeepQ extends Component {
   }
 
   async train() {
-    const xs = tf.tensor2d(this.state.episode);
-    // console.log("TEST INPUT: ", testInput);
+    const xs = tf.tensor([this.state.episode]);
+    // const xs = tf.tensor([[0, 0, 0], [0, 0, 0]]); //shape of 1,3
+    // console.log("TEST INPUT: ", xs);
     xs.print();
-    const ys = tf.tensor([1, 1, 1, 1]);
+    const ys = tf.tensor([[0, 0, 1, 0], [0, 0, 1, 0]]); //1 example of 4 things 1,4
+    ys.print();
     const pacmodel = tf.sequential({});
 
     pacmodel.add(
-      tf.layers.dense({ inputShape: 3, units: 6, activation: "relu" })
+      tf.layers.dense({
+        inputShape: [3],
+        units: 20,
+        activation: "relu"
+      })
     );
     pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
 
@@ -220,11 +231,15 @@ export default class DeepQ extends Component {
       loss: "meanSquaredError"
     });
 
-    let response = await pacmodel
-      .fit(xs, ys)
-      .then(result => console.log("RESULT! ", result));
-    console.log("RESPONSE: ", response);
+    pacmodel.summary();
+
+    let response = await pacmodel.fit(xs, ys);
+    // .then(result => console.log("RESULT! ", result));
+    console.log("RESPONSE: ", response.data);
+    response.print();
     // const input =  this.state.episode
+
+    await pacmodel.save("/Users/logantakahashi/Desktop/Immersive/Week11");
   }
 
   // handleReset() {
@@ -255,6 +270,9 @@ export default class DeepQ extends Component {
   //       tf.tensor(pacmodel.training.labels)
   //     );
   //   }
+  // }
+
+  // save(){
   // }
 
   stop() {
