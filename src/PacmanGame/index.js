@@ -160,6 +160,7 @@ export default class Pacman extends Component {
           score={this.state.score}
           reset={this.reset}
           running={this.state.running}
+          changeDirection={this.changeDirection}
         />
         <button onClick={this.pause}>PAUSE</button>;
 

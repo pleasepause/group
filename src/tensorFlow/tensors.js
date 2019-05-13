@@ -1,5 +1,13 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { Component } from "react";
+import { EAST, NORTH, WEST, SOUTH } from "../PacmanGame/constants";
+
+const dummyOutputs = [
+  [0.6, 0.1, 0.1, 0.2], //EAST
+  [0.05, 0.65, 0.1, 0.2], //NORH
+  [0.15, 0.25, 0.4, 0.2], //WEST
+  [0.02, 0.18, 0.1, 0.7] //SOUTH
+];
 
 export default class DeepQ extends Component {
   constructor(props) {
@@ -24,6 +32,7 @@ export default class DeepQ extends Component {
     this.handleEpisode = this.handleEpisode.bind(this);
     this.train = this.train.bind(this);
     this.setup = this.setup.bind(this);
+    this.act = this.act.bind(this);
     // this.actionInterval = this.actionInterval.bind(this);
   }
 
@@ -135,9 +144,12 @@ export default class DeepQ extends Component {
           ]
         ]
       });
+      let randomIdx = Math.floor(Math.random() * 4);
+      let dummyArr = dummyOutputs[randomIdx];
+      this.act(dummyArr);
     }, 220);
 
-    setTimeout(() => clearInterval(actionInterval), 10000);
+    setTimeout(() => clearInterval(actionInterval), 5000);
   }
 
   scoreTrack() {
@@ -172,19 +184,27 @@ export default class DeepQ extends Component {
     }, 1000);
   }
 
+  act(arr) {
+    console.log("Passed in Arr: ", arr);
+    let resultIdx = arr.indexOf(arr.reduce((a, c) => Math.max(a, c)));
+    console.log("RESULTIDX: ", resultIdx);
+    // console.log("PROPS INSIDE OF ACT", this.props.player.direction);
+    this.props.player.direction = resultIdx;
+  }
+
   handleEpisode() {
     console.log("EPISODE:", this.state.episode);
   }
 
   async train() {
-    const xs = tf.tensor(this.state.episode);
+    const xs = tf.tensor2d(this.state.episode);
     // console.log("TEST INPUT: ", testInput);
     xs.print();
     const ys = tf.tensor([1, 1, 1, 1]);
     const pacmodel = tf.sequential({});
 
     pacmodel.add(
-      tf.layers.dense({ inputShape: [3], units: 6, activation: "relu" })
+      tf.layers.dense({ inputShape: 3, units: 6, activation: "relu" })
     );
     pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
 
