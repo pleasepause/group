@@ -3,13 +3,6 @@ import React, { Component } from "react";
 import { EAST, NORTH, WEST, SOUTH } from "../PacmanGame/constants";
 import eps, { epsYs } from "./trainingepisodes";
 
-const dummyOutputs = [
-  [0.6, 0.1, 0.1, 0.2], //EAST
-  [0.05, 0.65, 0.1, 0.2], //NORH
-  [0.15, 0.25, 0.4, 0.2], //WEST
-  [0.02, 0.18, 0.1, 0.7] //SOUTH
-];
-
 export let completedEpisode;
 
 export default class DeepQ extends Component {
@@ -28,7 +21,8 @@ export default class DeepQ extends Component {
       prevPosition: null,
       currPosition: this.props.player.position,
       replayBuffer: [],
-      done: false
+      done: false,
+      model: []
     };
 
     this.stateToVector = this.stateToVector.bind(this);
@@ -38,7 +32,9 @@ export default class DeepQ extends Component {
     this.train = this.train.bind(this);
     this.setup = this.setup.bind(this);
     this.act = this.act.bind(this);
-    this.getTrainEpisode = this.getTrainEpisode.bind(this);
+    this.trainerCaller = this.trainerCaller.bind(this);
+    this.load = this.load.bind(this);
+    this.nextGuess = this.nextGuess.bind(this);
     // this.actionInterval = this.actionInterval.bind(this);
   }
 
@@ -154,8 +150,9 @@ export default class DeepQ extends Component {
         ]
       });
       let randomIdx = Math.floor(Math.random() * 4);
-      let dummyArr = dummyOutputs[randomIdx];
-      this.act(dummyArr);
+      // let dummyArr = dummyOutputs[randomIdx];
+      // this.act(dummyArr);
+      this.nextGuess();
     }, 220);
 
     // setTimeout(() => clearInterval(actionInterval), 5000);
@@ -222,10 +219,22 @@ export default class DeepQ extends Component {
   handleEpisode() {
     console.log("EPISODE:", this.state.episode);
   }
+  trainerCaller() {
+    //taking an array of completed episode of steps, an iterating through and calling train on each step.
+    for (let i = 0; i < eps.episode4.length; i++) {
+      console.log("WHAT WHAT IN TEH BUTT:", eps.episode4[i]);
+      console.log(Array.isArray(eps.episode4[i]));
+      this.train(eps.episode4[i], i);
+    }
+  }
 
-  async train() {
-    let xs = tf.tensor([eps.episode4]);
-    let ys = tf.tensor([epsYs(eps.episode4)]);
+  async train(step, i) {
+    console.log("step", step);
+    console.log("i", i);
+    let xs = tf.tensor([[step]]);
+    xs.print();
+    let ys = tf.tensor([[epsYs(eps.episode4)[i]]]);
+    ys.print();
     console.log("xs.length:", xs.shape[0]);
     console.log(eps.episode4);
     console.log(epsYs(eps.episode4));
@@ -243,7 +252,7 @@ export default class DeepQ extends Component {
 
     pacmodel.add(
       tf.layers.dense({
-        inputShape: [61, 5],
+        inputShape: [1, 5],
         units: 6,
         activation: "relu"
       })
@@ -267,7 +276,8 @@ export default class DeepQ extends Component {
 
     await pacmodel
       .fit(xs, ys, {
-        epochs: 10,
+        epochs: 2,
+        shuffle: true,
         callbacks: {
           onEpochEnd: () => console.log(pacmodel)
         }
@@ -276,13 +286,23 @@ export default class DeepQ extends Component {
         console.log("RESULTS: ", results);
       });
 
-    //now that model is train we can take in each current step and pass into predict and make move based on output
+    this.setState({
+      model: pacmodel
+    });
 
-    // let inputs = tf.tensor2d([[0, 1, 1]]);
+    //SAVE THE MODEL
+    let myStorage = window.localStorage;
+    await pacmodel
+      .save(`localstorage://${myStorage}`)
+      .then(() => console.log("done saving"));
 
-    // let outputs = pacmodel.predict(inputs);
+    tf.dispose({
+      xs,
+      ys
+    });
+
+    // let outputs = trainedmodel.predict(inputs);
     // outputs.print();
-    // console.log("OUTPUTS: ", outputs);
 
     // pacmodel.predict(tf.ones(tf.tensor([1, 4])).print());
 
@@ -290,58 +310,35 @@ export default class DeepQ extends Component {
 
     // const input =  this.state.episode
 
-    //let myStorage = window.localStorage;
-
-    // await pacmodel
-    //   .save(`localstorage://${myStorage}`)
-    //   .then(() => console.log("done saving"));
-
     // let loadedD = await tf.loadLayersModel(`localstorage://${myStorage}`);
     // console.log("LOADED: ", loadedD);
   }
 
-  // handleReset() {
-  //   console.log("CHECK if handleReset gets called on mount");
-  //   if (firstTime) {
-  //     firstTime = false;
-  //     const pacmodel = tf.sequential({
-  //       layers: [
-  //         tf.layers.dense({ inputShape: [1], units: 6, activation: "relu" }),
-  //         tf.layers.dense({ units: 4, activation: "softmax" })
-  //       ]
-  //     });
+  nextGuess() {
+    //now that model is train we can take in each current step and pass into predict and make move based on output
+    let currStep = this.state.episode[this.state.episode.length - 1];
+    // console.log("LAST STEP" c);
+    let inputs = tf.tensor([[currStep]]);
+    let model = this.state.model;
+    console.log("Model: ", model);
+    let ANSWER = model.predict(inputs);
+    console.log("ANSWER: ", ANSWER);
+    ANSWER.print();
+    // let inputs = tf.tensor2d([[0, 1, 1]]);
 
-  //     const sgdOpt = tf.train.sgd(0.1);
+    //PREDICTION!
+    // let trainedmodel = this.load();
+    // console.log("TRAINED MODEL", trainedmodel);
+  }
 
-  //     pacmodel.compile({
-  //       optimizer: sgdOpt,
-  //       loss: "meanSquaredError"
-  //     });
-
-  //     pacmodel.training = {
-  //       inputs: [],
-  //       labels: []
-  //     };
-  //   } else {
-  //     pacmodel.fit(
-  //       tf.tensor(pacmodel.training.inputs),
-  //       tf.tensor(pacmodel.training.labels)
-  //     );
-  //   }
-  // }
-
-  // save(){
-  // }
-
-  getTrainEpisode() {
-    let episodeTrainer = eps.episode2;
-    // console.log("EP trainer: ", episodeTrainer);
-
-    return episodeTrainer;
+  async load() {
+    let myStorage = window.localStorage;
+    let trainedmodel = await tf.loadLayersModel(`localstorage://${myStorage}`);
+    console.log("LOADED: ", trainedmodel);
   }
 
   stop() {
-    console.log("you clicked stop!");
+    // console.log("you clicked stop!");
     this.setState({
       done: true
     });
@@ -396,8 +393,10 @@ export default class DeepQ extends Component {
       <div>
         <button onClick={this.stop}>STOP</button>;
         <button onClick={this.handleEpisode}>EPISODE</button>
-        <button onClick={this.train}>Train</button>
+        <button onClick={this.trainerCaller}>Train</button>
         <button onClick={this.getTrainEpisode}>ysTrainingData</button>
+        <button onClick={this.save}> SAVE</button>
+        <button onClick={this.load}>LOAD</button>
       </div>
     );
   }

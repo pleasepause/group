@@ -64,7 +64,7 @@ export default class Pacman extends Component {
       this.setState({ stepTime: Date.now() });
 
       this.step();
-    }, 1);
+    }, 500);
 
     this.inputLayer();
     // console.log(this.inputLayer());
