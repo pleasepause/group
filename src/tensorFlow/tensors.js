@@ -1,6 +1,7 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { Component } from "react";
 import { EAST, NORTH, WEST, SOUTH } from "../PacmanGame/constants";
+import eps, { epsYs } from "./trainingepisodes";
 
 const dummyOutputs = [
   [0.6, 0.1, 0.1, 0.2], //EAST
@@ -8,6 +9,8 @@ const dummyOutputs = [
   [0.15, 0.25, 0.4, 0.2], //WEST
   [0.02, 0.18, 0.1, 0.7] //SOUTH
 ];
+
+export let completedEpisode;
 
 export default class DeepQ extends Component {
   constructor(props) {
@@ -23,7 +26,9 @@ export default class DeepQ extends Component {
       episode: [],
       currentReward: 0,
       prevPosition: null,
-      currPosition: this.props.player.position
+      currPosition: this.props.player.position,
+      replayBuffer: [],
+      done: false
     };
 
     this.stateToVector = this.stateToVector.bind(this);
@@ -33,46 +38,33 @@ export default class DeepQ extends Component {
     this.train = this.train.bind(this);
     this.setup = this.setup.bind(this);
     this.act = this.act.bind(this);
+    this.getTrainEpisode = this.getTrainEpisode.bind(this);
     // this.actionInterval = this.actionInterval.bind(this);
   }
 
   componentDidMount() {
-    // console.log("PROPS IN TENSORS.JS", this.props);
+    // console.log("PROPS IN TENSORS.JS", this.props.live);
     window.addEventListener(
       "keydown",
       this.handleMove(this.props.food, this.props.player)
     );
     this.setup();
-    // actionInterval();
-
-    // setInterval(
-    //   () =>
-    //     console.log(
-    //       "player direction",
-    //       this.props.player.direction,
-    //       "next direction",
-    //       this.props.player.nextDirection
-    //     ),
-    //   200
-    // );
-
-    // this.handleMove(this.props.food, this.props.player);
   }
 
-  componentDidUpdate() {
-    // console.log(
-    //   "player direction",
-    //   this.props.player.direction,
-    //   "next direction",
-    //   this.props.player.nextDirection
-    // );
-  }
+  // componentDidUpdate() {
+  //   console.log(
+  //     "player direction",
+  //     this.props.player.direction,
+  //     "next direction",
+  //     this.props.player.nextDirection
+  //   );
+  // }
 
   setup() {
     let actionInterval;
     actionInterval = setInterval(() => {
       // console.log("SCORE: ", this.props.score);
-      console.log("LOCAL STATE: ", this.state);
+      // console.log("LOCAL STATE: ", this.state);
       // console.log("LOCAL PROPS", this.props.score);
       // if (!this.state.prevScore) {
       //   this.setState({
@@ -80,7 +72,12 @@ export default class DeepQ extends Component {
       //     prevScore: this.props.score
       //   });
       // }
-      //  else
+
+      //if we eat all pellets or die, then stop the action interval
+      if (this.props.score >= 61 || this.props.lost) {
+        completedEpisode = this.state.episode;
+        clearInterval(actionInterval);
+      }
 
       let newPrev = this.state.currScore;
       let newPrevAction = this.state.currAction;
@@ -89,6 +86,17 @@ export default class DeepQ extends Component {
         currScore: this.props.score,
         prevScore: newPrev
       });
+
+      //add to our replay buffer
+      if (this.state.episode.length > 2) {
+        // console.log("inside of tuple conditional");
+        let tuple = [
+          this.state.episode[this.state.episode.length - 2],
+          this.state.episode[this.state.episode.length - 1]
+        ];
+        this.state.replayBuffer.push(tuple, this.state.done);
+      }
+
       if (!this.state.prevPosition) {
         this.setState({
           prevPosition: newPrevPosition,
@@ -109,8 +117,7 @@ export default class DeepQ extends Component {
           currentReward: -1,
           cumulativeReward: this.state.cumulativeReward - 1
         });
-        if (this.state.currAction === this.state.prevPosition) {
-        }
+
         if (!this.state.scoreTracking) {
           this.setState({
             ...this.state,
@@ -138,9 +145,11 @@ export default class DeepQ extends Component {
         episode: [
           ...this.state.episode,
           [
-            this.state.currAction,
+            this.props.player.direction,
             this.state.currentReward,
-            this.state.cumulativeReward
+            this.state.cumulativeReward,
+            this.state.currPosition[0] / 25,
+            this.state.currPosition[1] / 28
           ]
         ]
       });
@@ -149,7 +158,7 @@ export default class DeepQ extends Component {
       this.act(dummyArr);
     }, 220);
 
-    setTimeout(() => clearInterval(actionInterval), 5000);
+    // setTimeout(() => clearInterval(actionInterval), 5000);
   }
 
   scoreTrack() {
@@ -177,24 +186,37 @@ export default class DeepQ extends Component {
         prevScore === currScore &&
         prevPosition.join() === currPosition.join()
       ) {
-        console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
+        // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
         this.props.reset();
         // this.props.pause();
       }
-    }, 1000);
+    }, 20000);
   }
 
   act(arr) {
     // console.log("Passed in Arr: ", arr);
     let resultIdx = arr.indexOf(arr.reduce((a, c) => Math.max(a, c)));
     // console.log("RESULTIDX: ", resultIdx);
-    this.props.player.direction = resultIdx;
+    // this.props.player.direction = resultIdx;
+    // this.step(resultIdx);
   }
 
-  step() {
+  step(idx) {
     //take in the chosen action (0-3), determine what the reward and newstate would be given this action. also save the curr state as prevstate.
     //in order to determine what the reward and next state are, we need to then include the player.position as a feature for input.
     //if we know the player position, we can then predict their position for the next step given their direction...we can use food array to determine if they're landing on an eaten vs uneaten pellet, and can use prev position vs currposition to determine if they hit a wall
+    console.log(
+      "current direction",
+      this.props.player.direction,
+      "next direction: ",
+      idx,
+      "current player position",
+      this.props.player.position,
+      "FOOD: ",
+      this.props.food
+    );
+    // let nextState = (this.props.player.direction = idx);
+    // player position + next direction -- check against path array and see if coordinate exists, if it does then we know that next player position is that coordinate - if not then we know that next player position will be one more in the same direction as its current direction. if we store eaten pellets coordinates in local state, we can check and see if this coordinate exists in that, thus informing what next state's reward & cumulattive reward.
   }
 
   handleEpisode() {
@@ -202,21 +224,31 @@ export default class DeepQ extends Component {
   }
 
   async train() {
-    const xs = tf.tensor([this.state.episode]);
+    let xs = tf.tensor([eps.episode4]);
+    let ys = tf.tensor([epsYs(eps.episode4)]);
+    console.log("xs.length:", xs.shape[0]);
+    console.log(eps.episode4);
+    console.log(epsYs(eps.episode4));
+
+    console.log("YS: ", ys);
+    console.log("Xs ", xs);
+    // ys.print();
+    // const xs = tf.tensor2d([this.state.episode]);
     // const xs = tf.tensor([[0, 0, 0], [0, 0, 0]]); //shape of 1,3
     // console.log("TEST INPUT: ", xs);
-    xs.print();
-    const ys = tf.tensor([[0, 0, 1, 0], [0, 0, 1, 0]]); //1 example of 4 things 1,4
-    ys.print();
+    // xs.print();
+    // const ys = tf.tensor([[0, 0, 1, 0], [0, 0, 1, 0]]); //1 example of 4 things 1,4
+    // ys.print();
     const pacmodel = tf.sequential({});
 
     pacmodel.add(
       tf.layers.dense({
-        inputShape: [3],
-        units: 20,
+        inputShape: [61, 5],
+        units: 6,
         activation: "relu"
       })
     );
+
     pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
 
     // layers: [
@@ -233,13 +265,39 @@ export default class DeepQ extends Component {
 
     pacmodel.summary();
 
-    let response = await pacmodel.fit(xs, ys);
+    await pacmodel
+      .fit(xs, ys, {
+        epochs: 10,
+        callbacks: {
+          onEpochEnd: () => console.log(pacmodel)
+        }
+      })
+      .then(results => {
+        console.log("RESULTS: ", results);
+      });
+
+    //now that model is train we can take in each current step and pass into predict and make move based on output
+
+    // let inputs = tf.tensor2d([[0, 1, 1]]);
+
+    // let outputs = pacmodel.predict(inputs);
+    // outputs.print();
+    // console.log("OUTPUTS: ", outputs);
+
+    // pacmodel.predict(tf.ones(tf.tensor([1, 4])).print());
+
     // .then(result => console.log("RESULT! ", result));
-    console.log("RESPONSE: ", response.data);
-    response.print();
+
     // const input =  this.state.episode
 
-    await pacmodel.save("/Users/logantakahashi/Desktop/Immersive/Week11");
+    //let myStorage = window.localStorage;
+
+    // await pacmodel
+    //   .save(`localstorage://${myStorage}`)
+    //   .then(() => console.log("done saving"));
+
+    // let loadedD = await tf.loadLayersModel(`localstorage://${myStorage}`);
+    // console.log("LOADED: ", loadedD);
   }
 
   // handleReset() {
@@ -275,9 +333,18 @@ export default class DeepQ extends Component {
   // save(){
   // }
 
+  getTrainEpisode() {
+    let episodeTrainer = eps.episode2;
+    // console.log("EP trainer: ", episodeTrainer);
+
+    return episodeTrainer;
+  }
+
   stop() {
     console.log("you clicked stop!");
-    clearInterval(actionInterval);
+    this.setState({
+      done: true
+    });
   }
 
   handleMove(pacmodel, state) {
@@ -330,6 +397,7 @@ export default class DeepQ extends Component {
         <button onClick={this.stop}>STOP</button>;
         <button onClick={this.handleEpisode}>EPISODE</button>
         <button onClick={this.train}>Train</button>
+        <button onClick={this.getTrainEpisode}>ysTrainingData</button>
       </div>
     );
   }
