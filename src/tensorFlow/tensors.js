@@ -72,7 +72,7 @@ export default class DeepQ extends Component {
     let actionInterval;
     actionInterval = setInterval(() => {
       // console.log("SCORE: ", this.props.score);
-      console.log("LOCAL STATE: ", this.state);
+      // console.log("LOCAL STATE: ", this.state);
       // console.log("LOCAL PROPS", this.props.score);
       // if (!this.state.prevScore) {
       //   this.setState({
@@ -177,7 +177,7 @@ export default class DeepQ extends Component {
         prevScore === currScore &&
         prevPosition.join() === currPosition.join()
       ) {
-        console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
+        // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
         this.props.reset();
         // this.props.pause();
       }
@@ -185,15 +185,15 @@ export default class DeepQ extends Component {
   }
 
   act(arr) {
-    console.log("Passed in Arr: ", arr);
+    // console.log("Passed in Arr: ", arr);
     let resultIdx = arr.indexOf(arr.reduce((a, c) => Math.max(a, c)));
-    console.log("RESULTIDX: ", resultIdx);
+    // console.log("RESULTIDX: ", resultIdx);
     // console.log("PROPS INSIDE OF ACT", this.props.player.direction);
     this.props.player.direction = resultIdx;
   }
 
   handleEpisode() {
-    console.log("EPISODE:", this.state.episode);
+    // console.log("EPISODE:", this.state.episode);
   }
 
   async train() {
@@ -223,7 +223,7 @@ export default class DeepQ extends Component {
     let response = await pacmodel
       .fit(xs, ys)
       .then(result => console.log("RESULT! ", result));
-    console.log("RESPONSE: ", response);
+    // console.log("RESPONSE: ", response);
     // const input =  this.state.episode
   }
 
@@ -258,17 +258,17 @@ export default class DeepQ extends Component {
   // }
 
   stop() {
-    console.log("you clicked stop!");
+    // console.log("you clicked stop!");
     clearInterval(actionInterval);
   }
 
   handleMove(pacmodel, state) {
-    console.log(
-      "here is the pacmodel: ",
-      pacmodel,
-      "here is the state: ",
-      state
-    );
+    // console.log(
+    //   "here is the pacmodel: ",
+    //   pacmodel,
+    //   "here is the state: ",
+    //   state
+    // );
   }
 
   // handleMove(pacmodel, state) {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
 import { animate, changeDirection } from "./gameFunctions";
+import { changeMonsterDirection } from "./gameFunctions/monster";
 
 import { getNewPosition } from "./gameFunctions/movement";
 
@@ -10,7 +11,7 @@ import Scores from "./components/Score";
 import AllFood from "./components/AllFoods";
 import Monster from "./components/Monsters";
 import Player from "./components/Player";
-
+import DeepQ from "../tensorFlow/tensors";
 
 export default class Pacman extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class Pacman extends Component {
     this.currentSeconds = new Date().getTime() / 1000;
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
-
+    this.changeMonsterDirection = this.changeMonsterDirection.bind(this);
 
     this.onKey = evt => {
       if (evt.key === "ArrowRight") {
@@ -42,6 +43,22 @@ export default class Pacman extends Component {
       }
       if (evt.key === "ArrowDown") {
         return this.changeDirection(SOUTH);
+      }
+      if (evt.key === "d") {
+        return this.changeMonsterDirection(EAST);
+      }
+      if (evt.key === "w") {
+        return this.changeMonsterDirection(NORTH);
+      }
+      if (evt.key === "a") {
+        return this.changeMonsterDirection(WEST);
+      }
+      if (evt.key === "s") {
+        return this.changeMonsterDirection(SOUTH);
+      }
+      if (evt.key === "1") {
+        console.log(this.state);
+        this.state.monsters[0].playerControlled = true;
       }
 
       return null;
@@ -64,7 +81,7 @@ export default class Pacman extends Component {
     }, 1);
 
     this.inputLayer();
-    // console.log(this.inputLayer());
+    console.log(this.state);
     // this.chooseRandom();
   }
 
@@ -83,7 +100,7 @@ export default class Pacman extends Component {
       clearTimeout(this.timers.animate);
       this.timers.animate = setTimeout(() => this.step(), 20);
     } else {
-      console.log("WERE DONE");
+      // console.log("WERE DONE");
       clearTimeout(this.timers.start);
     }
   }
@@ -92,16 +109,17 @@ export default class Pacman extends Component {
     this.setState(changeDirection(this.state, { direction }));
   }
 
+  changeMonsterDirection(monsterDirection) {
+    this.setState(changeMonsterDirection(this.state, { monsterDirection }));
+  }
 
   actionMaker() {}
-
 
   inputLayer() {
     // console.log("INSIDE InputLayer!", this.state.food);
     let coordinates = this.state.food.map(food => food.position);
     return coordinates;
   }
-
 
   chooseRandom() {
     // setTimeout(() => {
@@ -111,14 +129,13 @@ export default class Pacman extends Component {
     let second = new Date().getTime() / 1000;
     let diff = Math.floor(second - this.currentSeconds) % 5;
 
-    console.log("Difference between Second and initial Second: ", diff);
+    // console.log("Difference between Second and initial Second: ", diff);
     if (this.state.score % 7 === 0 || diff === 0) {
       // this.changeDirection(Math.floor(Math.random() * z4));
       this.changeDirection(diff - 1 > 0 ? diff - 1 : 0);
-      console.log("this is the direction", this.state.player.direction);
+      // console.log("this is the direction", this.state.player.direction);
     }
   }
-
 
   reset() {
     this.state = getInitialState();
@@ -131,7 +148,7 @@ export default class Pacman extends Component {
   }
 
   render() {
-    // console.log(this.state);
+    console.log("sdfshjdfsdjkhfkjdfh", this.state);
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
@@ -153,7 +170,6 @@ export default class Pacman extends Component {
           nuPosition={this.nuPosition}
           onEnd={onEnd}
         />
-
         <DeepQ
           food={this.state.food}
           player={this.state.player}
@@ -163,9 +179,7 @@ export default class Pacman extends Component {
           changeDirection={this.changeDirection}
         />
         <button onClick={this.pause}>PAUSE</button>;
-
       </div>
     );
   }
 }
-

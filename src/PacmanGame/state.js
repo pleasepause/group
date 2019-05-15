@@ -2,7 +2,6 @@ import { EAST, NORTH, WEST } from "./constants";
 
 import { math } from "@tensorflow/tfjs";
 
-
 function isBigFood([posX, posY]) {
   return (posX === 0 || posX === 25) && (posY === 6 || posY === 26);
 }
@@ -10,7 +9,6 @@ function isBigFood([posX, posY]) {
 function generateFood() {
   const genRow = (startX, posY, num) =>
     new Array(num).fill(0).map((item, index) => [startX + index, posY]);
-
 
   const genDisparateRow = (xPoints, posY) => xPoints.map(posX => [posX, posY]);
 
@@ -22,7 +20,6 @@ function generateFood() {
 
   const genCol = (posX, startY, num) =>
     new Array(num).fill(0).map((item, index) => [posX, startY + index]);
-
 
   let board = [
     ...genRow(0, 0, 26),
@@ -52,7 +49,6 @@ function generateFood() {
     big: isBigFood(position)
   }));
 
-  console.log(board);
   return board;
 }
 
@@ -75,9 +71,10 @@ export default function getInitialState() {
         startingDirection: NORTH,
         position: [12.5, 15],
         startingPosition: [12.5, 15],
-        deadTime: Infinity,
+        deadTime: 0,
         eatingTime: 0,
-        color: "red"
+        color: "red",
+        playerControlled: false
       },
       {
         id: "monster-cyan",

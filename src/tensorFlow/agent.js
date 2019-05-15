@@ -109,7 +109,7 @@ export class PacManAgent {
     const { state: nextState, reward, done } = this.game.step(action);
 
     this.replayMemory.append([state, action, reward, done, nextState]);
-    console.log("stuff is happening");
+    // console.log("stuff is happening");
     this.cumulativeReward_ += reward;
     const output = {
       action,
