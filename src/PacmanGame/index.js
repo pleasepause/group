@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import { EAST, NORTH, WEST, SOUTH } from "./constants";
 import getInitialState from "./state";
-import { animate, changeDirection } from "./gameFunctions";
-import { changeMonsterDirection } from "./gameFunctions/monster";
+import {
+  animate,
+  changeDirection,
+  changeMonsterDirection
+} from "./gameFunctions";
+// import { changeMonsterDirection } from "./gameFunctions/monster";
 
 import { getNewPosition } from "./gameFunctions/movement";
 
@@ -25,11 +29,11 @@ export default class Pacman extends Component {
       30,
       new Date().getTime()
     );
+
     this.state.chooseRandom = this.chooseRandom.bind(this);
     this.currentSeconds = new Date().getTime() / 1000;
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
-    this.changeMonsterDirection = this.changeMonsterDirection.bind(this);
 
     this.onKey = evt => {
       if (evt.key === "ArrowRight") {
@@ -57,8 +61,8 @@ export default class Pacman extends Component {
         return this.changeMonsterDirection(SOUTH);
       }
       if (evt.key === "1") {
-        console.log(this.state);
         this.state.monsters[0].playerControlled = true;
+        console.log(this.state);
       }
 
       return null;
@@ -81,7 +85,7 @@ export default class Pacman extends Component {
     }, 1);
 
     this.inputLayer();
-    console.log(this.state);
+    // console.log(this.state);
     // this.chooseRandom();
   }
 
@@ -109,11 +113,10 @@ export default class Pacman extends Component {
     this.setState(changeDirection(this.state, { direction }));
   }
 
-  changeMonsterDirection(monsterDirection) {
-    this.setState(changeMonsterDirection(this.state, { monsterDirection }));
+  changeMonsterDirection(direction) {
+    console.log("ghost is changing direction", this.state);
+    // this.setState(changeMonsterDirection(this.state, { direction }));
   }
-
-  actionMaker() {}
 
   inputLayer() {
     // console.log("INSIDE InputLayer!", this.state.food);
@@ -148,21 +151,28 @@ export default class Pacman extends Component {
   }
 
   render() {
-    console.log("sdfshjdfsdjkhfkjdfh", this.state);
+    // console.log("sdfshjdfsdjkhfkjdfh", this.state);
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
-
-    const monsters = this.state.monsters.map(({ id, ...monster }) => (
-      <Monster key={id} {...props} {...monster} />
-    ));
+    // console.log("stateinrender", this.state);
+    // console.log("fwehucjsk", this.props);
+    // const monsters = this.state.monsters.map(({ id, ...monster }) => (
+    //   <Monster key={id} {...props} {...monster} />
+    // ));
 
     return (
       <div className="pacman">
         <Board {...props} />
         <Scores score={this.state.score} lost={this.state.lost} />
         <AllFood {...props} food={this.state.food} />
-        {monsters}
+        {/* {monsters} */}
+        <Monster
+          {...props}
+          {...this.state.monsters[0]}
+          nuPosition={this.nuPosition}
+        />
+        {/* <Monster key={this.state.monsters[0].id} {...props} /> */}
         <Player
           {...props}
           {...this.state.player}

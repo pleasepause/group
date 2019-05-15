@@ -74,7 +74,8 @@ export default function getInitialState() {
         deadTime: 0,
         eatingTime: 0,
         color: "red",
-        playerControlled: false
+        playerControlled: false,
+        nextDirection: NORTH
       },
       {
         id: "monster-cyan",

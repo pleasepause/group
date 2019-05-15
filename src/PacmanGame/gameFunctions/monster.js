@@ -125,28 +125,6 @@ function getAvailableMonsterRoutes({
 
   return { availableOptions, distanceFromTrack };
 }
-export function changeMonsterDirection(state, { direction }) {
-  const orderPolarityOld = orderPolarity(state.monsters[0].direction);
-  const orderPolarityNew = orderPolarity(direction);
-  //   console.log("stateinmonster", state);
-  if (orderPolarityOld.plane === orderPolarityNew.plane) {
-    return {
-      ...state,
-      monsters: {
-        ...state.monsters[0],
-        direction,
-        nextDirection: direction
-      }
-    };
-  }
-  return {
-    ...state,
-    monsters: {
-      ...state.monsters[0],
-      nextDirection: direction
-    }
-  };
-}
 function getNavigatedMonsterVector(
   newPosition,
   collision,
@@ -276,6 +254,11 @@ function animateMonster(state, time, player, monster, index) {
 }
 
 export function animateMonsters(state, time, player) {
+  //   return state.monsters.reduce(
+  //     (lastState, monster, index) =>
+  //       animateMonster(lastState, time, player, monster, index),
+  //     state
+  //   );
   return state.monsters.reduce(
     (lastState, monster, index) =>
       animateMonster(lastState, time, player, monster, index),
