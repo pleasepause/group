@@ -186,56 +186,83 @@ export default class DeepQ extends Component {
     let ys = tf.tensor([[epsYs(this.state.episode)[i]]]);
     ys.print();
 
-    //create the model
-    const pacmodel = tf.sequential({});
+    if (this.state.model.length > 0) {
+      await pacmodel
+        .fit(xs, ys, {
+          epochs: 1,
+          shuffle: true,
+          callbacks: {
+            onEpochEnd: () => console.log(pacmodel)
+          }
+        })
+        .then(results => {
+          console.log("RESULTS: ", results);
+        });
+      //make the pacmodel accessible via local state
+      this.setState({
+        model: pacmodel
+      });
+      //SAVE THE MODEL
+      let myStorage = window.localStorage;
+      await pacmodel
+        .save(`localstorage://${myStorage}`)
+        .then(() => console.log("done saving"));
+      tf.dispose({
+        xs,
+        ys
+      });
+    } else {
+      //create the model
+      const pacmodel = tf.sequential({});
 
-    pacmodel.add(
-      tf.layers.dense({
-        inputShape: [1, 5],
-        units: 6,
-        activation: "relu"
-      })
-    );
-    pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
+      pacmodel.add(
+        tf.layers.dense({
+          inputShape: [1, 5],
+          units: 6,
+          activation: "relu"
+        })
+      );
+      pacmodel.add(tf.layers.dense({ units: 4, activation: "softmax" }));
 
-    const sgdOpt = tf.train.sgd(0.1);
+      const sgdOpt = tf.train.sgd(0.1);
 
-    pacmodel.compile({
-      optimizer: sgdOpt,
-      loss: "meanSquaredError"
-    });
-    // pacmodel.summary();
+      pacmodel.compile({
+        optimizer: sgdOpt,
+        loss: "meanSquaredError"
+      });
+      // pacmodel.summary();
 
-    //TRAIN THE MODEL
-    await pacmodel
-      .fit(xs, ys, {
-        epochs: 1,
-        shuffle: true,
-        callbacks: {
-          onEpochEnd: () => console.log(pacmodel)
-        }
-      })
-      .then(results => {
-        console.log("RESULTS: ", results);
+      //TRAIN THE MODEL
+      await pacmodel
+        .fit(xs, ys, {
+          epochs: 1,
+          shuffle: true,
+          callbacks: {
+            onEpochEnd: () => console.log(pacmodel)
+          }
+        })
+        .then(results => {
+          console.log("RESULTS: ", results);
+        });
+
+      //make the pacmodel accessible via local state
+      this.setState({
+        model: pacmodel
       });
 
-    //make the pacmodel accessible via local state
-    this.setState({
-      model: pacmodel
-    });
+      //SAVE THE MODEL
+      let myStorage = window.localStorage;
+      await pacmodel
+        .save(`localstorage://${myStorage}`)
+        .then(() => console.log("done saving"));
 
-    //SAVE THE MODEL
-    let myStorage = window.localStorage;
-    await pacmodel
-      .save(`localstorage://${myStorage}`)
-      .then(() => console.log("done saving"));
-
-    tf.dispose({
-      xs,
-      ys
-    });
-    // let loadedD = await tf.loadLayersModel(`localstorage://${myStorage}`);
-    // console.log("LOADED: ", loadedD);
+      tf.dispose({
+        xs,
+        ys
+      });
+      // let loadedD = await tf.loadLayersModel(`localstorage://${myStorage}`);
+      // console.log("LOADED: ", loadedD);
+    }
   }
 
   //nextGuess is called at every step of the action interval:
