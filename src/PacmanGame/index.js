@@ -82,7 +82,7 @@ export default class Pacman extends Component {
       this.setState({ stepTime: Date.now() });
 
       this.step();
-    }, 1);
+    }, 500);
 
     this.inputLayer();
     // console.log(this.state);
@@ -151,7 +151,10 @@ export default class Pacman extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     // console.log("sdfshjdfsdjkhfkjdfh", this.state);
+=======
+>>>>>>> master
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
@@ -187,8 +190,15 @@ export default class Pacman extends Component {
           reset={this.reset}
           running={this.state.running}
           changeDirection={this.changeDirection}
+          lost={this.state.lost}
         />
+<<<<<<< HEAD
         <button onClick={this.pause}>PAUSE</button>;
+=======
+
+        {/* <button onClick={this.pause}>PAUSE</button>; */}
+
+>>>>>>> master
       </div>
     );
   }
