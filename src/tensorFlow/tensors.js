@@ -59,7 +59,6 @@ export default class DeepQ extends Component {
   setup() {
     let actionInterval;
     actionInterval = setInterval(() => {
-<<<<<<< HEAD
       // console.log("SCORE: ", this.props.score);
       // console.log("LOCAL STATE: ", this.state);
       // console.log("LOCAL PROPS", this.props.score);
@@ -68,12 +67,6 @@ export default class DeepQ extends Component {
       //     // ...this.state,
       //     prevScore: this.props.score
       //   });
-=======
-      //if we eat all pellets or die, then stop the action interval
-      // if (this.props.score >= 61 || this.props.lost) {
-      //   completedEpisode = this.state.episode;
-      //   clearInterval(actionInterval);
->>>>>>> master
       // }
 
       let newPrev = this.state.currScore;
@@ -158,44 +151,6 @@ export default class DeepQ extends Component {
   }
 
   scoreTrack() {
-<<<<<<< HEAD
-    // console.log(
-    //   "prevScore at time of invoke: ",
-    //   startPrevScore,
-    //   "currScore at time of invoke: ",
-    //   startCurrScore
-    // );
-    // console.log(
-    //   "real current score:",
-    //   this.state.currScore,
-    //   "real prev score: ",
-    //   this.state.prevScore
-    // );
-    setTimeout(() => {
-      // this.props.reset();
-      // this.setState({
-      //   ...this.state,
-      //   scoreTracking: false
-      // });
-      this.state.scoreTracking = false;
-      let { currScore, prevScore, prevPosition, currPosition } = this.state;
-      if (
-        prevScore === currScore &&
-        prevPosition.join() === currPosition.join()
-      ) {
-        // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
-        this.props.reset();
-        // this.props.pause();
-      }
-    }, 1000);
-  }
-
-  act(arr) {
-    // console.log("Passed in Arr: ", arr);
-    let resultIdx = arr.indexOf(arr.reduce((a, c) => Math.max(a, c)));
-    // console.log("RESULTIDX: ", resultIdx);
-    // console.log("PROPS INSIDE OF ACT", this.props.player.direction);
-=======
     //   setTimeout(() => {
     //     this.state.scoreTracking = false;
     //     let { currScore, prevScore, prevPosition, currPosition } = this.state;
@@ -215,7 +170,6 @@ export default class DeepQ extends Component {
     let resultIdx = options.indexOf(options.reduce((a, c) => Math.max(a, c)));
     // console.log("RESULTIDX: ", resultIdx);
     //make a random number and if it's beneath (or higher than) epsilon than disregard the output and choose a random action
->>>>>>> master
     this.props.player.direction = resultIdx;
     // this.step(resultIdx);
   }
@@ -320,13 +274,6 @@ export default class DeepQ extends Component {
     }
   }
 
-<<<<<<< HEAD
-    let response = await pacmodel
-      .fit(xs, ys)
-      .then(result => console.log("RESULT! ", result));
-    // console.log("RESPONSE: ", response);
-    // const input =  this.state.episode
-=======
   //nextGuess is called at every step of the action interval:
   nextGuess() {
     //now that model is trained we can take in each current step and pass into predict and make move based on output
@@ -340,7 +287,6 @@ export default class DeepQ extends Component {
 
     //pass the prediction ANSWER to the act method
     this.act(ANSWER);
->>>>>>> master
   }
 
   async load() {
@@ -352,13 +298,9 @@ export default class DeepQ extends Component {
 
   stop() {
     // console.log("you clicked stop!");
-<<<<<<< HEAD
-    clearInterval(actionInterval);
-=======
     this.setState({
       done: true
     });
->>>>>>> master
   }
 
   handleMove(pacmodel, state) {
