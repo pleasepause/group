@@ -96,7 +96,7 @@ export default class Player extends Component {
     const { gridSize, lost, position, direction } = this.props;
 
     const pathProps = {
-      stroke: "none",
+      stroke: "black",
       fill: "yellow"
     };
 
@@ -119,4 +119,3 @@ export default class Player extends Component {
     );
   }
 }
-

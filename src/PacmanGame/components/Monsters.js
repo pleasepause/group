@@ -36,7 +36,6 @@ function MonsterEye({ radius, offset, direction }) {
   );
 }
 
-
 function getMonsterPath(radius) {
   const width = radius * 2;
   const height = radius * 2;
@@ -97,18 +96,26 @@ function getColor(eating, eatingFlash, color) {
   return color;
 }
 
+function getPlayerControl(playerControl) {
+  if (playerControl === true) {
+    return "#FFF";
+  }
+  return "none";
+}
+
 function MonsterIcon({
   gridSize,
   eating,
   eatingFlash,
   position,
   direction,
-  color
+  color,
+  playerControl
 }) {
   const radius = gridSize * 0.75;
   const monsterPath = getMonsterPath(radius);
   const pathProps = {
-    stroke: "none",
+    stroke: getPlayerControl(playerControl),
     fill: getColor(eating, eatingFlash, color)
   };
 
@@ -130,14 +137,22 @@ function MonsterIcon({
   );
 }
 
-
 export default class Monster extends Component {
   constructor(props) {
     super(props);
 
+    this.getPlayerControl = this.getPlayerControl.bind(this);
     this.state = {
       eatingFlash: 0,
-      timerFlash: this.getTimerFlash()
+      timerFlash: this.getTimerFlash(),
+      playerControl: null
+    };
+    this.onKey = evt => {
+      if (evt.key === "1") {
+        this.getPlayerControl();
+      }
+
+      return null;
     };
   }
   getTimerFlash() {
@@ -153,7 +168,18 @@ export default class Monster extends Component {
       this.setState({ eatingFlash: (this.state.eatingFlash + 1) % 2 });
     }, 500);
   }
+  getPlayerControl() {
+    if (this.props.playerControlled === true) {
+      this.setState({ playerControl: true });
+    }
+  }
+  componentDidMount() {
+    // console.log(this.nuPosition);
+    window.addEventListener("keydown", this.onKey);
+  }
   componentDidUpdate(prevProps) {
+    // console.log("props in monsterjs", this.props);
+    // console.log("state", this.state);
     if (
       (this.props.eatingTime > 0 && prevProps.eatingTime === 0) ||
       (this.props.eatingTime === 0 && prevProps.eatingTime > 0)
