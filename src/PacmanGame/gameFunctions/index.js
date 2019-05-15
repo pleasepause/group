@@ -63,3 +63,24 @@ export function changeDirection(state, { direction }) {
     }
   };
 }
+export function changeMonsterDirection(state, { direction }) {
+  const orderPolarityOld = orderPolarity(state.monsters.direction);
+  const orderPolarityNew = orderPolarity(direction);
+  if (orderPolarityOld.plane === orderPolarityNew.plane) {
+    return {
+      ...state,
+      monsters: {
+        ...state.monsters,
+        direction,
+        nextDirection: direction
+      }
+    };
+  }
+  return {
+    ...state,
+    monsters: {
+      ...state.monsters,
+      nextDirection: direction
+    }
+  };
+}

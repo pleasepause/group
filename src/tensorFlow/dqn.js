@@ -38,7 +38,7 @@ export function createDeepQNetwork(h, w, numActions) {
     );
   }
 
-  console.log("INSIDE OF DQN file", state);
+  // console.log("INSIDE OF DQN file", state);
   const model = tf.sequential({
     layers: [
       tf.layers.dense({ inputShape: [2], units: 6, activation: "relu" }),

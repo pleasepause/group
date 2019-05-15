@@ -59,10 +59,14 @@ export default class DeepQ extends Component {
   setup() {
     let actionInterval;
     actionInterval = setInterval(() => {
-      //if we eat all pellets or die, then stop the action interval
-      // if (this.props.score >= 61 || this.props.lost) {
-      //   completedEpisode = this.state.episode;
-      //   clearInterval(actionInterval);
+      // console.log("SCORE: ", this.props.score);
+      // console.log("LOCAL STATE: ", this.state);
+      // console.log("LOCAL PROPS", this.props.score);
+      // if (!this.state.prevScore) {
+      //   this.setState({
+      //     // ...this.state,
+      //     prevScore: this.props.score
+      //   });
       // }
 
       let newPrev = this.state.currScore;
@@ -171,7 +175,7 @@ export default class DeepQ extends Component {
   }
 
   handleEpisode() {
-    console.log("EPISODE:", this.state.episode);
+    // console.log("EPISODE:", this.state.episode);
   }
   trainerCaller() {
     //taking an array of completed episode of steps, an iterating through and calling train on each step.
@@ -300,12 +304,12 @@ export default class DeepQ extends Component {
   }
 
   handleMove(pacmodel, state) {
-    console.log(
-      "here is the pacmodel: ",
-      pacmodel,
-      "here is the state: ",
-      state
-    );
+    // console.log(
+    //   "here is the pacmodel: ",
+    //   pacmodel,
+    //   "here is the state: ",
+    //   state
+    // );
   }
 
   // handleMove(pacmodel, state) {
