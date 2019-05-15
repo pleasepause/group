@@ -130,7 +130,6 @@ export default class Pacman extends Component {
   }
 
   render() {
-    // console.log(this.state);
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
@@ -161,7 +160,7 @@ export default class Pacman extends Component {
           changeDirection={this.changeDirection}
           lost={this.state.lost}
         />
-        <button onClick={this.pause}>PAUSE</button>;
+        {/* <button onClick={this.pause}>PAUSE</button>; */}
       </div>
     );
   }

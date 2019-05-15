@@ -20,7 +20,9 @@ export default class DeepQ extends Component {
       currPosition: this.props.player.position,
       replayBuffer: [],
       done: false,
-      model: []
+      model: [],
+      eating: false,
+      isPaused: false
     };
 
     this.stateToVector = this.stateToVector.bind(this);
@@ -33,12 +35,20 @@ export default class DeepQ extends Component {
     this.trainerCaller = this.trainerCaller.bind(this);
     this.load = this.load.bind(this);
     this.nextGuess = this.nextGuess.bind(this);
+    this.togglePause = this.togglePause.bind(this);
     // this.actionInterval = this.actionInterval.bind(this);
   }
 
   componentDidMount() {
-    this.train();
-    setTimeout(() => this.setup(), 6000);
+    // this.train();
+    // setTimeout(() => this.setup(), 6000);
+    this.setup();
+  }
+
+  togglePause() {
+    this.setState({
+      isPaused: !this.state.isPaused
+    });
   }
 
   setup() {
@@ -57,7 +67,11 @@ export default class DeepQ extends Component {
         currScore: this.props.score,
         prevScore: newPrev
       });
+      // let newPrevCumulativeReward = this.
 
+      if (this.state.isPaused) {
+        clearInterval(actionInterval);
+      }
       //add to our replay buffer
       if (this.state.episode.length > 2) {
         let tuple = [
@@ -116,8 +130,8 @@ export default class DeepQ extends Component {
             this.props.player.direction,
             this.state.currentReward,
             this.state.cumulativeReward,
-            this.state.currPosition[0] / 25,
-            this.state.currPosition[1] / 28
+            this.state.currPosition[0],
+            this.state.currPosition[1]
           ]
         ]
       });
@@ -138,7 +152,7 @@ export default class DeepQ extends Component {
         // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
         this.props.reset();
       }
-    }, 20000);
+    }, 5000);
   }
 
   act(tens) {
@@ -156,10 +170,10 @@ export default class DeepQ extends Component {
   }
   trainerCaller() {
     //taking an array of completed episode of steps, an iterating through and calling train on each step.
-    for (let i = 0; i < eps.episode4.length; i++) {
-      console.log("current training step:", eps.episode4[i]);
-      console.log(Array.isArray(eps.episode4[i]));
-      this.train(eps.episode4[i], i);
+    for (let i = 0; i < this.state.episode.length; i++) {
+      console.log("current training step:", this.state.episode[i]);
+      console.log(Array.isArray(this.state.episode[i]));
+      this.train(this.state.episode[i], i);
     }
   }
 
@@ -169,7 +183,7 @@ export default class DeepQ extends Component {
     xs.print();
 
     //determine what the one-hot output target should be given the input step
-    let ys = tf.tensor([[epsYs(eps.episode4)[i]]]);
+    let ys = tf.tensor([[epsYs(this.state.episode)[i]]]);
     ys.print();
 
     //create the model
@@ -230,9 +244,10 @@ export default class DeepQ extends Component {
     let currStep = this.state.episode[this.state.episode.length - 1];
     let inputs = tf.tensor([[currStep]]);
     let model = this.state.model;
-    console.log("Model: ", model);
-    model.summary();
+    // console.log("Model: ", model);
+    // model.summary();
     let ANSWER = model.predict(inputs);
+    ANSWER.print();
 
     //pass the prediction ANSWER to the act method
     this.act(ANSWER);
@@ -295,6 +310,7 @@ export default class DeepQ extends Component {
         <button onClick={this.getTrainEpisode}>ysTrainingData</button>
         <button onClick={this.save}> SAVE</button>
         <button onClick={this.load}>LOAD</button>
+        <button onClick={this.togglePause}>TogglePause</button>
       </div>
     );
   }
