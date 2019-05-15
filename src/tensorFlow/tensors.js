@@ -27,7 +27,7 @@ export default class DeepQ extends Component {
 
     this.stateToVector = this.stateToVector.bind(this);
     this.handleMove = this.handleMove.bind(this);
-    this.scoreTrack = this.scoreTrack.bind(this);
+    // this.scoreTrack = this.scoreTrack.bind(this);
     this.handleEpisode = this.handleEpisode.bind(this);
     this.train = this.train.bind(this);
     this.setup = this.setup.bind(this);
@@ -38,6 +38,11 @@ export default class DeepQ extends Component {
     this.togglePause = this.togglePause.bind(this);
     // this.actionInterval = this.actionInterval.bind(this);
   }
+  // componentDidUpdate() {
+  //   if (this.state.cumulativeReward < -10) {
+  //     this.props.reset();
+  //   }
+  // }
 
   componentDidMount() {
     // this.train();
@@ -55,10 +60,10 @@ export default class DeepQ extends Component {
     let actionInterval;
     actionInterval = setInterval(() => {
       //if we eat all pellets or die, then stop the action interval
-      if (this.props.score >= 61 || this.props.lost) {
-        completedEpisode = this.state.episode;
-        clearInterval(actionInterval);
-      }
+      // if (this.props.score >= 61 || this.props.lost) {
+      //   completedEpisode = this.state.episode;
+      //   clearInterval(actionInterval);
+      // }
 
       let newPrev = this.state.currScore;
       let newPrevAction = this.state.currAction;
@@ -142,17 +147,17 @@ export default class DeepQ extends Component {
   }
 
   scoreTrack() {
-    setTimeout(() => {
-      this.state.scoreTracking = false;
-      let { currScore, prevScore, prevPosition, currPosition } = this.state;
-      if (
-        prevScore === currScore &&
-        prevPosition.join() === currPosition.join()
-      ) {
-        // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
-        this.props.reset();
-      }
-    }, 5000);
+    //   setTimeout(() => {
+    //     this.state.scoreTracking = false;
+    //     let { currScore, prevScore, prevPosition, currPosition } = this.state;
+    //     if (
+    //       prevScore === currScore &&
+    //       prevPosition.join() === currPosition.join()
+    //     ) {
+    //       // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
+    //       this.props.reset();
+    //     }
+    //   }, 5000);
   }
 
   act(tens) {
@@ -172,9 +177,9 @@ export default class DeepQ extends Component {
     //taking an array of completed episode of steps, an iterating through and calling train on each step.
     for (let i = 0; i < this.state.episode.length; i++) {
       console.log("current training step:", this.state.episode[i]);
-      console.log(Array.isArray(this.state.episode[i]));
       this.train(this.state.episode[i], i);
     }
+    this.props.reset();
   }
 
   async train(step, i) {
