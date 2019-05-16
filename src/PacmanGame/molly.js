@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
-import { EAST, NORTH, WEST, SOUTH } from './constants';
+import {
+  EAST,
+  NORTH,
+  WEST,
+  SOUTH,
+  mEAST,
+  mNORTH,
+  mSOUTH,
+  mWEST
+} from './constants';
 import getInitialState from './state';
-import { animate, changeDirection } from './gameFunctions';
+import {
+  animate,
+  changeDirection,
+  changeMonsterDirection
+} from './gameFunctions';
 
 import { getNewPosition } from './gameFunctions/movement';
 import DeepQ from '../tensorFlow/tensors';
@@ -27,19 +40,50 @@ export default class Pacman extends Component {
     this.currentSeconds = new Date().getTime() / 1000;
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
+    this.toggleSwitcher = this.toggleSwitcher.bind(this);
 
     this.onKey = evt => {
-      if (evt.key === 'ArrowRight') {
-        return this.changeDirection(EAST);
+      if (!this.state.controlToggle) {
+        if (evt.key === 'ArrowRight') {
+          return this.changeDirection(EAST);
+        }
+        if (evt.key === 'ArrowUp') {
+          return this.changeDirection(NORTH);
+        }
+        if (evt.key === 'ArrowLeft') {
+          return this.changeDirection(WEST);
+        }
+        if (evt.key === 'ArrowDown') {
+          return this.changeDirection(SOUTH);
+        }
+        if (evt.key === 'd') {
+          return this.changeDirection(mEAST);
+        }
+        if (evt.key === 'w') {
+          return this.changeDirection(mNORTH);
+        }
+        if (evt.key === 'a') {
+          return this.changeDirection(mWEST);
+        }
+        if (evt.key === 's') {
+          return this.changeDirection(mSOUTH);
+        }
+      } else if (this.state.controlToggle) {
+        if (evt.key === 'ArrowRight') {
+          return this.changeMonsterDirection(EAST);
+        }
+        if (evt.key === 'ArrowUp') {
+          return this.changeMonsterDirection(NORTH);
+        }
+        if (evt.key === 'ArrowLeft') {
+          return this.changeMonsterDirection(WEST);
+        }
+        if (evt.key === 'ArrowDown') {
+          return this.changeMonsterDirection(SOUTH);
+        }
       }
-      if (evt.key === 'ArrowUp') {
-        return this.changeDirection(NORTH);
-      }
-      if (evt.key === 'ArrowLeft') {
-        return this.changeDirection(WEST);
-      }
-      if (evt.key === 'ArrowDown') {
-        return this.changeDirection(SOUTH);
+      if (evt.key === '1') {
+        return this.toggleSwitcher();
       }
 
       return null;
@@ -87,9 +131,17 @@ export default class Pacman extends Component {
   }
 
   changeDirection(direction) {
-    this.setState(changeDirection(this.state, { direction }));
+    // console.log(this.state);
+    if (0 <= direction <= 3) {
+      this.setState(changeDirection(this.state, { direction }));
+    }
+
+    // console.log(this.state);
   }
 
+  changeMonsterDirection(direction) {
+    this.setState(changeMonsterDirection(this.state, { direction }));
+  }
   actionMaker() {}
 
   inputLayer() {
@@ -98,6 +150,15 @@ export default class Pacman extends Component {
     return coordinates;
   }
 
+  toggleSwitcher() {
+    !this.state.controlToggle
+      ? this.setState({
+          controlToggle: true
+        })
+      : this.setState({
+          controlToggle: false
+        });
+  }
   chooseRandom() {
     // setTimeout(() => {
     //   let second = new Date().getTime() / 1000;
@@ -131,7 +192,12 @@ export default class Pacman extends Component {
     const props = { gridSize: 12, ...otherProps };
 
     const monsters = this.state.monsters.map(({ id, ...monster }) => (
-      <Monster key={id} {...props} {...monster} />
+      <Monster
+        key={id}
+        {...props}
+        {...monster}
+        toggle={this.state.controlToggle}
+      />
     ));
 
     return (

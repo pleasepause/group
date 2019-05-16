@@ -1,10 +1,7 @@
 import { EAST, NORTH, WEST } from './constants';
 
-<<<<<<< HEAD
 import { math } from '@tensorflow/tfjs';
 
-=======
->>>>>>> 858e92558624aa6bf0f02433ec2b6cca62c55c7f
 function isBigFood([posX, posY]) {
   return (posX === 0 || posX === 25) && (posY === 6 || posY === 26);
 }
@@ -74,17 +71,11 @@ export default function getInitialState() {
         startingDirection: NORTH,
         position: [12.5, 15],
         startingPosition: [12.5, 15],
-<<<<<<< HEAD
-        deadTime: 2,
-        eatingTime: 0,
-        color: 'red'
-=======
         deadTime: 0,
         eatingTime: 0,
-        color: "red",
+        color: 'red',
         playerControlled: false,
         nextDirection: NORTH
->>>>>>> 858e92558624aa6bf0f02433ec2b6cca62c55c7f
       },
       {
         id: 'monster-cyan',
@@ -92,7 +83,7 @@ export default function getInitialState() {
         startingDirection: EAST,
         position: [10.5, 15],
         startingPosition: [10.5, 15],
-        deadTime: 2,
+        deadTime: Infinity,
         eatingTime: 0,
         color: 'cyan',
         directionBias: true
@@ -103,7 +94,7 @@ export default function getInitialState() {
         startingDirection: WEST,
         position: [14.5, 15],
         startingPosition: [14.5, 15],
-        deadTime: 2,
+        deadTime: Infinity,
         eatingTime: 0,
         color: 'darkorange'
       },
@@ -113,13 +104,14 @@ export default function getInitialState() {
         startingDirection: NORTH,
         position: [12.5, 17],
         startingPosition: [12.5, 17],
-        deadTime: 2,
+        deadTime: Infinity,
         eatingTime: 0,
         color: 'pink',
         directionBias: true
       }
     ],
     food: generateFood(),
-    startGame: false
+    startGame: false,
+    controlToggle: false
   };
 }
