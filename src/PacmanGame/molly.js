@@ -266,6 +266,9 @@ export default class Pacman extends Component {
       />
     ));
 
+    if (this.state.lost === true) {
+      this.reset();
+    }
     return (
       <div className="pacman">
         <Board {...props} />
