@@ -3,6 +3,11 @@ export const NORTH = 1;
 export const WEST = 2;
 export const SOUTH = 3;
 
+export const mEAST = 4;
+export const mNORTH = 5;
+export const mWEST = 6;
+export const mSOUTH = 7;
+
 export const COMPASS = [EAST, NORTH, WEST, SOUTH];
 
 export const WIDTH = 28;
@@ -17,7 +22,7 @@ export function cssPosition(position, gridSize) {
 
 export const PLAYER_RADIUS = 0.8;
 
-export const WALL_COLOUR = "#06f";
+export const WALL_COLOUR = '#06f';
 
 export const EATING_TIME_SECONDS = 5;
 

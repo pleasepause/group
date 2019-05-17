@@ -1,4 +1,4 @@
-import tracks from "./tracks";
+import tracks from './tracks';
 
 export function gridDistance(posA, posB) {
   // The Pacman board is a kind of manhattan style map, with constraints
@@ -8,10 +8,12 @@ export function gridDistance(posA, posB) {
 }
 
 export function orderPolarity(direction) {
+  // console.log(direction, 'wow');
   const order = (direction < 2) >> 0;
   const polarity = (-1) ** (1 - order);
   const plane = direction % 2;
 
+  // console.log({ order, polarity, plane }, 'whoo');
   return { order, polarity, plane };
 }
 

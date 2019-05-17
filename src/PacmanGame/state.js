@@ -1,6 +1,6 @@
-import { EAST, NORTH, WEST } from "./constants";
+import { EAST, NORTH, WEST } from './constants';
 
-import { math } from "@tensorflow/tfjs";
+import { math } from '@tensorflow/tfjs';
 
 function isBigFood([posX, posY]) {
   return (posX === 0 || posX === 25) && (posY === 6 || posY === 26);
@@ -66,50 +66,55 @@ export default function getInitialState() {
     lost: false,
     monsters: [
       {
-        id: "monster-red",
+        id: 'monster-red',
         direction: NORTH,
         startingDirection: NORTH,
         position: [12.5, 15],
         startingPosition: [12.5, 15],
         deadTime: 0,
         eatingTime: 0,
-        color: "red",
+        color: 'red',
         playerControlled: false,
         nextDirection: NORTH
       },
       {
-        id: "monster-cyan",
+        id: 'monster-cyan',
         direction: EAST,
         startingDirection: EAST,
         position: [10.5, 15],
         startingPosition: [10.5, 15],
         deadTime: Infinity,
         eatingTime: 0,
-        color: "cyan",
+        color: 'cyan',
         directionBias: true
       },
       {
-        id: "monster-orange",
+        id: 'monster-orange',
         direction: WEST,
         startingDirection: WEST,
         position: [14.5, 15],
         startingPosition: [14.5, 15],
         deadTime: Infinity,
         eatingTime: 0,
-        color: "darkorange"
+        color: 'darkorange'
       },
       {
-        id: "monster-pink",
+        id: 'monster-pink',
         direction: NORTH,
         startingDirection: NORTH,
         position: [12.5, 17],
         startingPosition: [12.5, 17],
-        deadTime: Infinity,
+        deadTime: 0,
         eatingTime: 0,
-        color: "pink",
+        color: 'pink',
         directionBias: true
       }
     ],
-    food: generateFood()
+    food: generateFood(),
+    startGame: false,
+    controlToggle: false,
+    controlRed: false,
+    controlPink: false,
+    controlCyan: false
   };
 }
