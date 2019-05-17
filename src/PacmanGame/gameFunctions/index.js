@@ -63,14 +63,143 @@ export function changeDirection(state, { direction }) {
     }
   };
 }
-export function changeMonsterDirection(state, { direction }) {
-  console.log('hello');
+// export function changeMonsterDirection(state, { direction }) {
+//   console.log('hello');
+//   const orderPolarityOld = orderPolarity(state.monsters[0].direction);
+//   const orderPolarityNew = orderPolarity(direction);
+//   console.log(orderPolarityOld, 'old');
+//   console.log(orderPolarityNew, 'new');
+//   const newStuff = (state.monsters[0].direction = direction);
+//   const newStuff2 = (state.monsters[0].nextDirection = direction);
+//   if (orderPolarityOld.plane === orderPolarityNew.plane) {
+//     return {
+//       ...state,
+//       newStuff,
+//       newStuff2
+//     };
+//   }
+//   // return {
+//   //   ...state,
+//   //   monsters: {
+//   //     ...state.monsters[0],
+//   //     nextDirection: direction
+//   //   }
+//   // };
+// }
+
+// export function changeMonsterDirection(state, { direction }) {
+//   console.log('hello');
+//   const orderPolarityOld = orderPolarity(state.monsters[0].direction);
+//   const orderPolarityNew = orderPolarity(direction);
+//   console.log(orderPolarityOld, 'old');
+//   console.log(orderPolarityNew, 'new');
+//   const newStuff = (state.monsters[0].direction = direction);
+//   const newStuff2 = (state.monsters[0].nextDirection = direction);
+//   if (orderPolarityOld.plane === orderPolarityNew.plane) {
+//     return {
+//       ...state,
+//       newStuff,
+//       newStuff2
+//     };
+//   }
+//   // return {
+//   //   ...state,
+//   //   monsters: {
+//   //     ...state.monsters[0],
+//   //     nextDirection: direction
+//   //   }
+//   // };
+// }
+export function changeMonsterDirectionRed(state, { direction }) {
+  // console.log(direction, 'hello');
+  if (direction === 4) {
+    direction = 0;
+  }
+  if (direction === 5) {
+    direction = 1;
+  }
+  if (direction === 6) {
+    direction = 2;
+  }
+  if (direction === 7) {
+    direction = 3;
+  }
   const orderPolarityOld = orderPolarity(state.monsters[0].direction);
   const orderPolarityNew = orderPolarity(direction);
   console.log(orderPolarityOld, 'old');
   console.log(orderPolarityNew, 'new');
   const newStuff = (state.monsters[0].direction = direction);
   const newStuff2 = (state.monsters[0].nextDirection = direction);
+  if (orderPolarityOld.plane === orderPolarityNew.plane) {
+    return {
+      ...state,
+      newStuff,
+      newStuff2
+    };
+  }
+  // return {
+  //   ...state,
+  //   monsters: {
+  //     ...state.monsters[0],
+  //     nextDirection: direction
+  //   }
+  // };
+}
+
+export function changeMonsterDirectionCyan(state, { direction }) {
+  // console.log(direction, 'hello');
+  if (direction === 4) {
+    direction = 0;
+  }
+  if (direction === 5) {
+    direction = 1;
+  }
+  if (direction === 6) {
+    direction = 2;
+  }
+  if (direction === 7) {
+    direction = 3;
+  }
+  const orderPolarityOld = orderPolarity(state.monsters[1].direction);
+  const orderPolarityNew = orderPolarity(direction);
+
+  const newStuff = (state.monsters[1].direction = direction);
+  const newStuff2 = (state.monsters[1].nextDirection = direction);
+  if (orderPolarityOld.plane === orderPolarityNew.plane) {
+    return {
+      ...state,
+      newStuff,
+      newStuff2
+    };
+  }
+  // return {
+  //   ...state,
+  //   monsters: {
+  //     ...state.monsters[0],
+  //     nextDirection: direction
+  //   }
+  // };
+}
+export function changeMonsterDirectionPink(state, { direction }) {
+  console.log(direction);
+  // console.log(direction, 'hello');
+  if (direction === 4) {
+    direction = 0;
+  }
+  if (direction === 5) {
+    direction = 1;
+  }
+  if (direction === 6) {
+    direction = 2;
+  }
+  if (direction === 7) {
+    direction = 3;
+  }
+  const orderPolarityOld = orderPolarity(state.monsters[3].direction);
+  const orderPolarityNew = orderPolarity(direction);
+
+  const newStuff = (state.monsters[3].direction = direction);
+  const newStuff2 = (state.monsters[3].nextDirection = direction);
   if (orderPolarityOld.plane === orderPolarityNew.plane) {
     return {
       ...state,

@@ -112,6 +112,9 @@ export default function getInitialState() {
     ],
     food: generateFood(),
     startGame: false,
-    controlToggle: false
+    controlToggle: false,
+    controlRed: false,
+    controlPink: false,
+    controlCyan: false
   };
 }

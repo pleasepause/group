@@ -13,7 +13,9 @@ import getInitialState from './state';
 import {
   animate,
   changeDirection,
-  changeMonsterDirection
+  changeMonsterDirectionRed,
+  changeMonsterDirectionPink,
+  changeMonsterDirectionCyan
 } from './gameFunctions';
 
 import { getNewPosition } from './gameFunctions/movement';
@@ -41,7 +43,9 @@ export default class Pacman extends Component {
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
     this.toggleSwitcher = this.toggleSwitcher.bind(this);
-
+    this.switchRed = this.switchRed.bind(this);
+    this.switchCyan = this.switchCyan.bind(this);
+    this.switchPink = this.switchPink.bind(this);
     this.onKey = evt => {
       if (!this.state.controlToggle) {
         if (evt.key === 'ArrowRight') {
@@ -59,31 +63,60 @@ export default class Pacman extends Component {
         if (evt.key === 'd') {
           return this.changeDirection(mEAST);
         }
+      }
+      if (this.state.controlRed) {
+        if (evt.key === 'd') {
+          return this.changeMonsterDirectionRed(mEAST);
+        }
         if (evt.key === 'w') {
-          return this.changeDirection(mNORTH);
+          return this.changeMonsterDirectionRed(mNORTH);
         }
         if (evt.key === 'a') {
-          return this.changeDirection(mWEST);
+          return this.changeMonsterDirectionRed(mWEST);
         }
         if (evt.key === 's') {
-          return this.changeDirection(mSOUTH);
-        }
-      } else if (this.state.controlToggle) {
-        if (evt.key === 'ArrowRight') {
-          return this.changeMonsterDirection(EAST);
-        }
-        if (evt.key === 'ArrowUp') {
-          return this.changeMonsterDirection(NORTH);
-        }
-        if (evt.key === 'ArrowLeft') {
-          return this.changeMonsterDirection(WEST);
-        }
-        if (evt.key === 'ArrowDown') {
-          return this.changeMonsterDirection(SOUTH);
+          return this.changeMonsterDirectionRed(mSOUTH);
         }
       }
-      if (evt.key === '1') {
+      if (this.state.controlPink) {
+        if (evt.key === 'd') {
+          return this.changeMonsterDirectionPink(mEAST);
+        }
+        if (evt.key === 'w') {
+          return this.changeMonsterDirectionPink(mNORTH);
+        }
+        if (evt.key === 'a') {
+          return this.changeMonsterDirectionPink(mWEST);
+        }
+        if (evt.key === 's') {
+          return this.changeMonsterDirectionPink(mSOUTH);
+        }
+      }
+      if (this.state.controlCyan) {
+        if (evt.key === 'd') {
+          return this.changeMonsterDirectionCyan(mEAST);
+        }
+        if (evt.key === 'w') {
+          return this.changeMonsterDirectionCyan(mNORTH);
+        }
+        if (evt.key === 'a') {
+          return this.changeMonsterDirectionCyan(mWEST);
+        }
+        if (evt.key === 's') {
+          return this.changeMonsterDirectionCyan(mSOUTH);
+        }
+      }
+      if (evt.key === '-') {
         return this.toggleSwitcher();
+      }
+      if (evt.key === '1') {
+        return this.switchRed();
+      }
+      if (evt.key === '2') {
+        return this.switchCyan();
+      }
+      if (evt.key === '3') {
+        return this.switchPink();
       }
 
       return null;
@@ -139,8 +172,14 @@ export default class Pacman extends Component {
     // console.log(this.state);
   }
 
-  changeMonsterDirection(direction) {
-    this.setState(changeMonsterDirection(this.state, { direction }));
+  changeMonsterDirectionRed(direction) {
+    this.setState(changeMonsterDirectionRed(this.state, { direction }));
+  }
+  changeMonsterDirectionCyan(direction) {
+    this.setState(changeMonsterDirectionCyan(this.state, { direction }));
+  }
+  changeMonsterDirectionPink(direction) {
+    this.setState(changeMonsterDirectionPink(this.state, { direction }));
   }
   actionMaker() {}
 
@@ -157,6 +196,33 @@ export default class Pacman extends Component {
         })
       : this.setState({
           controlToggle: false
+        });
+  }
+  switchRed() {
+    !this.state.controlRed
+      ? this.setState({
+          controlRed: true
+        })
+      : this.setState({
+          controlRed: false
+        });
+  }
+  switchPink() {
+    !this.state.controlPink
+      ? this.setState({
+          controlPink: true
+        })
+      : this.setState({
+          controlPink: false
+        });
+  }
+  switchCyan() {
+    !this.state.controlCyan
+      ? this.setState({
+          controlCyan: true
+        })
+      : this.setState({
+          controlCyan: false
         });
   }
   chooseRandom() {
