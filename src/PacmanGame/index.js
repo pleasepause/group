@@ -20,21 +20,10 @@ import DeepQ from "../tensorFlow/tensors";
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
-
-    this.inputLayer = this.inputLayer.bind(this);
     this.state = getInitialState();
-    this.nuPosition = getNewPosition(
-      this.state.player.position,
-      this.state.player.direction,
-      30,
-      new Date().getTime()
-    );
-
-    this.state.chooseRandom = this.chooseRandom.bind(this);
     this.currentSeconds = new Date().getTime() / 1000;
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
-
     this.onKey = evt => {
       if (evt.key === "ArrowRight") {
         return this.changeDirection(EAST);
@@ -75,7 +64,6 @@ export default class Pacman extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.nuPosition);
     window.addEventListener("keydown", this.onKey);
 
     this.timers.start = setTimeout(() => {
@@ -83,10 +71,6 @@ export default class Pacman extends Component {
 
       this.step();
     }, 500);
-
-    this.inputLayer();
-    // console.log(this.state);
-    // this.chooseRandom();
   }
 
   componentWillUnmount() {
@@ -104,7 +88,6 @@ export default class Pacman extends Component {
       clearTimeout(this.timers.animate);
       this.timers.animate = setTimeout(() => this.step(), 20);
     } else {
-      // console.log("WERE DONE");
       clearTimeout(this.timers.start);
     }
   }
@@ -124,22 +107,6 @@ export default class Pacman extends Component {
     return coordinates;
   }
 
-  chooseRandom() {
-    // setTimeout(() => {
-    //   let second = new Date().getTime() / 1000;
-    //   return second;
-    // }, 5000);
-    let second = new Date().getTime() / 1000;
-    let diff = Math.floor(second - this.currentSeconds) % 5;
-
-    // console.log("Difference between Second and initial Second: ", diff);
-    if (this.state.score % 7 === 0 || diff === 0) {
-      // this.changeDirection(Math.floor(Math.random() * z4));
-      this.changeDirection(diff - 1 > 0 ? diff - 1 : 0);
-      // console.log("this is the direction", this.state.player.direction);
-    }
-  }
-
   reset() {
     this.state = getInitialState();
   }
@@ -154,11 +121,9 @@ export default class Pacman extends Component {
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
-    // console.log("stateinrender", this.state);
-    // console.log("fwehucjsk", this.props);
-    // const monsters = this.state.monsters.map(({ id, ...monster }) => (
-    //   <Monster key={id} {...props} {...monster} />
-    // ));
+    if (this.state.lost === true) {
+      this.reset();
+    }
 
     return (
       <div className="pacman">
@@ -166,17 +131,12 @@ export default class Pacman extends Component {
         <Scores score={this.state.score} lost={this.state.lost} />
         <AllFood {...props} food={this.state.food} />
         {/* {monsters} */}
-        <Monster
-          {...props}
-          {...this.state.monsters[0]}
-          nuPosition={this.nuPosition}
-        />
+        <Monster {...props} {...this.state.monsters[0]} />
         {/* <Monster key={this.state.monsters[0].id} {...props} /> */}
         <Player
           {...props}
           {...this.state.player}
           lost={this.state.lost}
-          nuPosition={this.nuPosition}
           onEnd={onEnd}
         />
         <DeepQ
