@@ -14,9 +14,8 @@ import Player from './components/Player';
 export default class Pacman extends Component {
   constructor(props) {
     super(props);
-
-    this.inputLayer = this.inputLayer.bind(this);
     this.state = getInitialState();
+<<<<<<< HEAD
     this.nuPosition = getNewPosition(
       this.state.player.position,
       this.state.player.direction,
@@ -24,10 +23,11 @@ export default class Pacman extends Component {
       new Date().getTime()
     );
     this.state.chooseRandom = this.chooseRandom.bind(this);
+=======
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
     this.currentSeconds = new Date().getTime() / 1000;
     this.reset = this.reset.bind(this);
     this.pause = this.pause.bind(this);
-
     this.onKey = evt => {
       if (evt.key === 'ArrowRight') {
         return this.changeDirection(EAST);
@@ -52,18 +52,26 @@ export default class Pacman extends Component {
   }
 
   componentDidMount() {
+<<<<<<< HEAD
     // console.log(this.nuPosition);
     window.addEventListener('keydown', this.onKey);
+=======
+    window.addEventListener("keydown", this.onKey);
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
 
     this.timers.start = setTimeout(() => {
       this.setState({ stepTime: Date.now() });
 
       this.step();
+<<<<<<< HEAD
     }, 1);
 
     this.inputLayer();
     // console.log(this.inputLayer());
     // this.chooseRandom();
+=======
+    }, 500);
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
   }
 
   componentWillUnmount() {
@@ -81,7 +89,10 @@ export default class Pacman extends Component {
       clearTimeout(this.timers.animate);
       this.timers.animate = setTimeout(() => this.step(), 20);
     } else {
+<<<<<<< HEAD
       console.log('WERE DONE');
+=======
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
       clearTimeout(this.timers.start);
     }
   }
@@ -98,6 +109,7 @@ export default class Pacman extends Component {
     return coordinates;
   }
 
+<<<<<<< HEAD
   chooseRandom() {
     // setTimeout(() => {
     //   let second = new Date().getTime() / 1000;
@@ -114,6 +126,8 @@ export default class Pacman extends Component {
     }
   }
 
+=======
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
   reset() {
     this.state = getInitialState();
   }
@@ -129,22 +143,33 @@ export default class Pacman extends Component {
     const { onEnd, ...otherProps } = this.props;
 
     const props = { gridSize: 12, ...otherProps };
+<<<<<<< HEAD
 
     const monsters = this.state.monsters.map(({ id, ...monster }) => (
       <Monster key={id} {...props} {...monster} />
     ));
+=======
+    if (this.state.lost === true) {
+      this.reset();
+    }
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
 
     return (
       <div className="pacman">
         <Board {...props} />
         <Scores score={this.state.score} lost={this.state.lost} />
         <AllFood {...props} food={this.state.food} />
+<<<<<<< HEAD
         {monsters}
+=======
+        {/* {monsters} */}
+        <Monster {...props} {...this.state.monsters[0]} />
+        {/* <Monster key={this.state.monsters[0].id} {...props} /> */}
+>>>>>>> df40288b66bb1123a02b1e037180f4509acb14f4
         <Player
           {...props}
           {...this.state.player}
           lost={this.state.lost}
-          nuPosition={this.nuPosition}
           onEnd={onEnd}
         />
         <DeepQ

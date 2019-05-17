@@ -1,6 +1,24 @@
 import * as tf from "@tensorflow/tfjs";
 import React, { Component } from "react";
-import eps, { epsYs } from "./trainingepisodes";
+export const epsYs = arr => {
+  let ysArr = [];
+  for (let i = 0; i < arr.length; i++) {
+    switch (arr[i][0]) {
+      case 0:
+        ysArr.push([0.3, 0.25, 0.25, 0.2]);
+        break;
+      case 1:
+        ysArr.push([0.25, 0.3, 0.2, 0.25]);
+        break;
+      case 2:
+        ysArr.push([0.25, 0.2, 0.3, 0.25]);
+        break;
+      case 3:
+        ysArr.push([0.2, 0.25, 0.25, 0.3]);
+    }
+  }
+  return ysArr;
+};
 
 export let completedEpisode;
 
@@ -12,8 +30,6 @@ export default class DeepQ extends Component {
       currScore: this.props.score,
       cumulativeReward: 0,
       prevAction: null,
-      currAction: this.props.player.direction,
-      scoreTracking: false,
       episode: [],
       currentReward: 0,
       prevPosition: null,
@@ -27,7 +43,6 @@ export default class DeepQ extends Component {
 
     this.stateToVector = this.stateToVector.bind(this);
     this.handleMove = this.handleMove.bind(this);
-    // this.scoreTrack = this.scoreTrack.bind(this);
     this.handleEpisode = this.handleEpisode.bind(this);
     this.train = this.train.bind(this);
     this.setup = this.setup.bind(this);
@@ -106,18 +121,9 @@ export default class DeepQ extends Component {
       // }
       if (this.state.currScore === this.state.prevScore) {
         this.setState({
-          currentReward: -1,
-          cumulativeReward: this.state.cumulativeReward - 1
+          currentReward: -5
         });
 
-        if (!this.state.scoreTracking) {
-          this.setState({
-            ...this.state,
-            scoreTracking: true
-          });
-          //calling scoreTrack method
-          this.scoreTrack();
-        }
         //start a time for 60 secs, in callback function of timer, if this.state curr & prev scores are the same as when the timer started, then reset the game
       } else {
         this.setState({
@@ -148,20 +154,6 @@ export default class DeepQ extends Component {
     }, 220);
 
     // setTimeout(() => clearInterval(actionInterval), 5000);
-  }
-
-  scoreTrack() {
-    //   setTimeout(() => {
-    //     this.state.scoreTracking = false;
-    //     let { currScore, prevScore, prevPosition, currPosition } = this.state;
-    //     if (
-    //       prevScore === currScore &&
-    //       prevPosition.join() === currPosition.join()
-    //     ) {
-    //       // console.log("YOU TRIGGERED THE CONDITIONAL!!!!");
-    //       this.props.reset();
-    //     }
-    //   }, 5000);
   }
 
   act(tens) {
