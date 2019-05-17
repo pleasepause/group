@@ -104,7 +104,7 @@ export default function getInitialState() {
         startingDirection: NORTH,
         position: [12.5, 17],
         startingPosition: [12.5, 17],
-        deadTime: Infinity,
+        deadTime: 0,
         eatingTime: 0,
         color: 'pink',
         directionBias: true
